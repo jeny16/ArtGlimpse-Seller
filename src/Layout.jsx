@@ -5,6 +5,7 @@ import Footer from "./components/Footer";
 import { Box } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { logout } from "./store/authSlice";
+import axios from "axios";
 
 const Layout = () => {
   const dispatch = useDispatch();
