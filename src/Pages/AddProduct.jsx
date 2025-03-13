@@ -1,16 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Box, Typography, TextField, Button, Grid, Paper, FormControl, InputLabel, Select, MenuItem, Checkbox, FormControlLabel, InputAdornment,
-  Divider, Chip, Stack
+  Box, Typography, TextField, Button, Grid, Paper, FormControl, InputLabel, Select, MenuItem,
+  Checkbox, FormControlLabel, InputAdornment, Divider, Chip, Stack
 } from "@mui/material";
 import { ImagePlus, Plus, Tag, Package2 } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import { useTheme } from '@mui/material/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { createProduct, resetAddProductState } from '../store/addProductSlice';
 
 const AddProduct = () => {
   const navigate = useNavigate();
   const theme = useTheme();
-  
+  const dispatch = useDispatch();
+  const { isLoading, error, success } = useSelector((state) => state.addProduct);
+
   const [productData, setProductData] = useState({
     name: '',
     description: '',
@@ -34,17 +38,17 @@ const AddProduct = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setProductData(prev => ({
+    setProductData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     if (files.length) {
-      const newImages = files.map(file => ({ file, preview: URL.createObjectURL(file) }));
-      setImages(prev => [...prev, ...newImages]);
+      const newImages = files.map((file) => ({ file, preview: URL.createObjectURL(file) }));
+      setImages((prev) => [...prev, ...newImages]);
     }
   };
 
@@ -60,7 +64,7 @@ const AddProduct = () => {
   };
 
   const removeTag = (tagToRemove) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
+    setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
   const handleKeyDown = (e) => {
@@ -70,15 +74,32 @@ const AddProduct = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const finalProductData = {
-      ...productData,
-      tags: tags.join(', ')
-    };
-    console.log('Product Data:', finalProductData);
-    console.log('Images:', images);
-    navigate('/dashboard');
+    // Create FormData to send both fields and files
+    const formData = new FormData();
+    // Append all product data fields
+    for (const key in productData) {
+      formData.append(key, productData[key]);
+    }
+    // Append tags as a comma-separated string
+    formData.append('tags', tags.join(', '));
+    // Append images (field name 'images' must match backend configuration)
+    images.forEach((img) => {
+      formData.append('images', img.file);
+    });
+
+    // Dispatch Redux async thunk
+    dispatch(createProduct(formData))
+      .unwrap()
+      .then((result) => {
+        console.log('Product added successfully:', result);
+        dispatch(resetAddProductState());
+        navigate('/dashboard');
+      })
+      .catch((err) => {
+        console.error('Error adding product:', err);
+      });
   };
 
   const fieldStyles = {
@@ -100,13 +121,15 @@ const AddProduct = () => {
     mb: 1,
   };
 
+  // Optionally, display error or loading state to the user
+  useEffect(() => {
+    if (error) {
+      console.error('Error:', error);
+    }
+  }, [error]);
+
   return (
-    <Box sx={{ 
-      // backgroundColor: theme.palette.tints.tint2, 
-      minHeight: '100vh', 
-      p: { xs: 2, md: 4 }, 
-      mt: { xs: 8, md: 16 },
-    }}>
+    <Box sx={{ minHeight: '100vh', p: { xs: 2, md: 4 }, mt: { xs: 8, md: 16 } }}>
       <Paper 
         elevation={2} 
         sx={{ 
@@ -146,7 +169,6 @@ const AddProduct = () => {
                 </Typography>
               </Box>
               <Divider sx={{ mb: 3, borderColor: theme.palette.shades.light }} />
-              
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
@@ -283,7 +305,6 @@ const AddProduct = () => {
                 </Typography>
               </Box>
               <Divider sx={{ mb: 3, borderColor: theme.palette.shades.light }} />
-              
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <TextField
@@ -296,7 +317,6 @@ const AddProduct = () => {
                     sx={fieldStyles}
                   />
                 </Grid>
-                
                 <Grid item xs={12}>
                   <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.neutral.main }}>
                     Product Tags
@@ -318,7 +338,7 @@ const AddProduct = () => {
                         backgroundColor: theme.palette.custom.accent,
                         fontFamily: theme.typography.button.fontFamily,
                         textTransform: theme.typography.button.textTransform,
-                        height: 56, // Match TextField height
+                        height: 56,
                         '&:hover': {
                           backgroundColor: theme.palette.custom.highlight
                         }
@@ -401,7 +421,7 @@ const AddProduct = () => {
                             overflow: 'hidden', 
                             borderRadius: 2, 
                             border: `1px solid ${theme.palette.secondary.light}`,
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
                           }}
                         >
                           <img 
