@@ -25,9 +25,9 @@ export const createProduct = createAsyncThunk(
 
       console.log('Token from localStorage:', token);
 
+      // Remove explicit Content-Type header so axios sets it automatically
       const response = await axios.post('http://localhost:8081/api/seller/products', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`,
         },
         withCredentials: true, // Ensure credentials are included

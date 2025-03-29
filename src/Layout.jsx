@@ -12,17 +12,20 @@ const Layout = () => {
 
   useEffect(() => {
     const validateToken = async () => {
-      const storedUser = localStorage.getItem('user');
+      const storedUser = localStorage.getItem("user");
       if (storedUser) {
         const { token } = JSON.parse(storedUser);
         try {
-          await axios.get('http://localhost:8081/api/auth/validate', {
+          await axios.get("http://localhost:8081/api/auth/validate", {
             headers: { Authorization: `Bearer ${token}` },
           });
         } catch (error) {
           dispatch(logout());
-          localStorage.removeItem('user');
-          console.error("Token validation failed, user has been logged out.", error);
+          localStorage.removeItem("user");
+          console.error(
+            "Token validation failed, user has been logged out.",
+            error
+          );
         }
       }
     };
@@ -30,11 +33,23 @@ const Layout = () => {
     validateToken();
   }, [dispatch]);
   return (
-    <Box>
-      <Header />
+    <Box>  
+    <Header />
+    <Box
+      component="main"
+      sx={{
+        flexGrow: 1,
+        // p: 1,
+        mt: 20,
+        width: "100%",
+        maxWidth: "1200px",
+        mx: "auto", 
+      }}
+    >
       <Outlet />
-      <Footer />
     </Box>
+    <Footer />
+  </Box>
   );
 };
 

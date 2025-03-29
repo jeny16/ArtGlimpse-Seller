@@ -1,8 +1,31 @@
 import React from "react";
-import { Card, CardContent, Typography, Box, LinearProgress } from "@mui/material";
-import { ArrowUpRight } from "lucide-react";
+import { Card, CardContent, Typography, Box, LinearProgress, useTheme } from "@mui/material";
+import { ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 const StatCard = ({ icon: Icon, title, value, change, color, subtext }) => {
+  // Use the theme to get the actual color value
+  const theme = useTheme();
+  
+  // Parse the color string to get the actual color from theme
+  const getThemeColor = (colorPath) => {
+    const parts = colorPath.split('.');
+    let result = theme.palette;
+    
+    // Navigate through the theme object based on the path
+    for (const part of parts) {
+      if (result[part]) {
+        result = result[part];
+      } else {
+        return colorPath; // Return original if not found
+      }
+    }
+    
+    return typeof result === 'string' ? result : colorPath;
+  };
+
+  const iconColor = getThemeColor(color);
+  const isPositive = change >= 0;
+
   return (
     <Card 
       variant="outlined"
@@ -21,7 +44,7 @@ const StatCard = ({ icon: Icon, title, value, change, color, subtext }) => {
       <CardContent sx={{ display: "flex", alignItems: "center", pb: 1 }}>
         <Box 
           sx={{ 
-            backgroundColor: `${color}.lighter`, 
+            backgroundColor: `${getThemeColor(color)}15`, // Using opacity for lighter version
             p: 1.5, 
             borderRadius: 2, 
             mr: 2,
@@ -30,7 +53,7 @@ const StatCard = ({ icon: Icon, title, value, change, color, subtext }) => {
             justifyContent: "center",
           }}
         >
-          <Icon size={24} color={color} />
+          <Icon size={24} color={iconColor} />
         </Box>
         <Box>
           <Typography variant="subtitle2" color="text.secondary">
@@ -49,8 +72,8 @@ const StatCard = ({ icon: Icon, title, value, change, color, subtext }) => {
       <Box sx={{ px: 2, pb: 2, mt: "auto" }}>
         <LinearProgress
           variant="determinate"
-          value={Math.abs(change)}
-          color={change > 0 ? "success" : "error"}
+          value={Math.min(100, Math.abs(change) * 5)} // Scale the change for better visual (capped at 100%)
+          color={isPositive ? "success" : "error"}
           sx={{ 
             height: 4, 
             borderRadius: 2,
@@ -58,16 +81,24 @@ const StatCard = ({ icon: Icon, title, value, change, color, subtext }) => {
           }}
         />
         <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-          <ArrowUpRight 
-            size={16} 
-            color={change > 0 ? "green" : "red"}
-            style={{ marginRight: 4 }}
-          />
+          {isPositive ? (
+            <ArrowUpRight 
+              size={16}
+              color={getThemeColor("success.main")}
+              style={{ marginRight: 4 }}
+            />
+          ) : (
+            <ArrowDownRight 
+              size={16}
+              color={getThemeColor("error.main")}
+              style={{ marginRight: 4 }}
+            />
+          )}
           <Typography 
             variant="caption" 
-            color={change > 0 ? "success.main" : "error.main"}
+            color={isPositive ? "success.main" : "error.main"}
           >
-            {change > 0 ? "+" : ""}{change}% from last week
+            {isPositive ? "+" : ""}{change}% from last week
           </Typography>
         </Box>
       </Box>

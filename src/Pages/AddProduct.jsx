@@ -1,39 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box, Typography, TextField, Button, Grid, Paper, FormControl, InputLabel, Select, MenuItem,
-  Checkbox, FormControlLabel, InputAdornment, Divider, Chip, Stack
+  Checkbox, FormControlLabel, InputAdornment, Divider, Chip, Stack, IconButton, Card
 } from "@mui/material";
-import { ImagePlus, Plus, Tag, Package2 } from 'lucide-react';
-import { useNavigate } from "react-router-dom";
+import { ImagePlus, Plus, Tag, Package2, X, Save, ArrowRight } from 'lucide-react';
 import { useTheme } from '@mui/material/styles';
-import { useDispatch, useSelector } from 'react-redux';
-import { createProduct, resetAddProductState } from '../store/addProductSlice';
 
 const AddProduct = () => {
-  const navigate = useNavigate();
   const theme = useTheme();
-  const dispatch = useDispatch();
-  const { isLoading, error, success } = useSelector((state) => state.addProduct);
-
   const [productData, setProductData] = useState({
     name: '',
     description: '',
     price: '',
-    currency: 'INR',
     stock: '',
     category: '',
     discount: false,
     percentage_Discount: '',
-    valid_Until_Discount: '',
-    processing_Time: '',
-    shipping_Time: '',
-    shipping_Cost: '',
-    estimated_Delivery: '',
     materials_Made: '',
-    tags: ''
+    tags: []
   });
   const [images, setImages] = useState([]);
-  const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
 
   const handleInputChange = (e) => {
@@ -52,419 +38,289 @@ const AddProduct = () => {
     }
   };
 
-  const handleTagInput = (e) => {
-    setTagInput(e.target.value);
-  };
-
   const addTag = () => {
-    if (tagInput.trim() !== '' && !tags.includes(tagInput.trim())) {
-      setTags([...tags, tagInput.trim()]);
+    if (tagInput.trim() !== '' && !productData.tags.includes(tagInput.trim())) {
+      setProductData({ ...productData, tags: [...productData.tags, tagInput.trim()] });
       setTagInput('');
     }
   };
 
   const removeTag = (tagToRemove) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
+    setProductData({ ...productData, tags: productData.tags.filter((tag) => tag !== tagToRemove) });
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addTag();
-    }
+  const removeImage = (index) => {
+    const newImages = [...images];
+    URL.revokeObjectURL(newImages[index].preview);
+    newImages.splice(index, 1);
+    setImages(newImages);
   };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // Create FormData to send both fields and files
-    const formData = new FormData();
-    // Append all product data fields
-    for (const key in productData) {
-      formData.append(key, productData[key]);
-    }
-    // Append tags as a comma-separated string
-    formData.append('tags', tags.join(', '));
-    // Append images (field name 'images' must match backend configuration)
-    images.forEach((img) => {
-      formData.append('images', img.file);
-    });
-
-    // Dispatch Redux async thunk
-    dispatch(createProduct(formData))
-      .unwrap()
-      .then((result) => {
-        console.log('Product added successfully:', result);
-        dispatch(resetAddProductState());
-        navigate('/dashboard');
-      })
-      .catch((err) => {
-        console.error('Error adding product:', err);
-      });
-  };
-
-  const fieldStyles = {
-    '& .MuiOutlinedInput-root': {
-      '&:hover fieldset': {
-        borderColor: theme.palette.custom.accent,
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: theme.palette.custom.accent,
-        borderWidth: 2,
-      },
-    },
-    '& .MuiInputLabel-root.Mui-focused': {
-      color: theme.palette.custom.accent,
-    },
-    '& .MuiInputBase-input': {
-      color: theme.palette.neutral.main,
-    },
-    mb: 1,
-  };
-
-  // Optionally, display error or loading state to the user
-  useEffect(() => {
-    if (error) {
-      console.error('Error:', error);
-    }
-  }, [error]);
 
   return (
-    <Box sx={{ minHeight: '100vh', p: { xs: 2, md: 4 }, mt: { xs: 8, md: 16 } }}>
-      <Paper 
-        elevation={2} 
-        sx={{ 
-          maxWidth: 900, 
-          margin: 'auto', 
-          p: { xs: 2, md: 4 }, 
-          borderRadius: 3,
-          backgroundColor: theme.palette.tints.tint3,
-          border: `1px solid ${theme.palette.secondary.light}`
-        }}
-      >
-        <Typography variant="h4" sx={{ 
-          textAlign: 'center', 
-          fontWeight: '600', 
-          color: theme.palette.custom.accent, 
-          mb: 3,
-          borderBottom: `2px solid ${theme.palette.shades.light}`,
-          pb: 2,
-          fontFamily: theme.typography.h2.fontFamily
-        }}>
-          ADD NEW PRODUCT
+    <Box sx={{ 
+      minHeight: '100vh', 
+      p: { xs: 2, md: 4 }, 
+      backgroundColor: '#f5f5f5'
+    }}>
+      <Box sx={{ maxWidth: 1200, margin: 'auto' }}>
+        <Typography variant="h4" sx={{ fontWeight: '600', mb: 4, pt: 3 }}>
+          Add New Product
         </Typography>
-
-        <Box component="form" onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
-            {/* Basic Information Section */}
-            <Grid item xs={12}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Package2 size={22} color={theme.palette.custom.accent} />
-                <Typography variant="h6" sx={{ 
-                  color: theme.palette.custom.accent, 
-                  ml: 1,
-                  fontWeight: 600,
-                  fontFamily: theme.typography.h3.fontFamily
-                }}>
-                  Product Details
-                </Typography>
-              </Box>
-              <Divider sx={{ mb: 3, borderColor: theme.palette.shades.light }} />
-              <Grid container spacing={2}>
+        
+        <Grid container spacing={3}>
+          {/* Left Column - Main Details */}
+          <Grid item xs={12} md={8}>
+            <Card sx={{ p: 3, mb: 3, borderRadius: 2 }}>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 500, display: 'flex', alignItems: 'center' }}>
+                <Package2 size={20} style={{ marginRight: 8 }} /> 
+                Product Details
+              </Typography>
+              
+              <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Product Name"
-                    name="name"
-                    value={productData.name}
-                    onChange={handleInputChange}
-                    required
-                    sx={fieldStyles}
+                  <TextField 
+                    fullWidth 
+                    label="Product Name" 
+                    name="name" 
+                    value={productData.name} 
+                    onChange={handleInputChange} 
+                    required 
+                    variant="outlined"
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Description"
-                    name="description"
-                    value={productData.description}
-                    onChange={handleInputChange}
-                    multiline
-                    rows={3}
-                    required
-                    sx={fieldStyles}
+                  <TextField 
+                    fullWidth 
+                    label="Description" 
+                    name="description" 
+                    value={productData.description} 
+                    onChange={handleInputChange} 
+                    multiline 
+                    rows={4} 
+                    required 
+                    variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Price"
-                    name="price"
-                    type="number"
-                    value={productData.price}
-                    onChange={handleInputChange}
-                    InputProps={{ 
-                      startAdornment: <InputAdornment position="start">₹</InputAdornment>,
-                    }}
-                    required
-                    sx={fieldStyles}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Stock"
-                    name="stock"
-                    type="number"
-                    value={productData.stock}
-                    onChange={handleInputChange}
-                    required
-                    sx={fieldStyles}
-                  />
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <FormControl fullWidth sx={fieldStyles}>
+                <Grid item xs={12}>
+                  <FormControl fullWidth variant="outlined">
                     <InputLabel>Category</InputLabel>
-                    <Select
-                      name="category"
-                      value={productData.category}
-                      onChange={handleInputChange}
+                    <Select 
+                      name="category" 
+                      value={productData.category} 
+                      onChange={handleInputChange} 
                       required
+                      label="Category"
                     >
                       <MenuItem value="Jewelry & Accessories">Jewelry & Accessories</MenuItem>
-                      <MenuItem value="Home & Living">Home & Living</MenuItem>
                       <MenuItem value="Clothing">Clothing</MenuItem>
-                      <MenuItem value="Art & Collectibles">Art & Collectibles</MenuItem>
+                      <MenuItem value="Home & Living">Home & Living</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
+                <Grid item xs={12}>
+                  <TextField 
+                    fullWidth 
+                    label="Materials" 
+                    name="materials_Made" 
+                    value={productData.materials_Made} 
+                    onChange={handleInputChange} 
+                  />
+                </Grid>
+              </Grid>
+            </Card>
+
+            <Card sx={{ p: 3, mb: 3, borderRadius: 2 }}>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 500 }}>Pricing & Inventory</Typography>
+              
+              <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
+                  <TextField 
+                    fullWidth 
+                    label="Price" 
+                    name="price" 
+                    type="number" 
+                    value={productData.price} 
+                    onChange={handleInputChange} 
+                    required 
+                    InputProps={{ 
+                      startAdornment: <InputAdornment position="start">₹</InputAdornment> 
+                    }} 
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField 
+                    fullWidth 
+                    label="Stock" 
+                    name="stock" 
+                    type="number" 
+                    value={productData.stock} 
+                    onChange={handleInputChange} 
+                    required 
+                  />
+                </Grid>
+                <Grid item xs={12}>
                   <FormControlLabel
-                    control={
-                      <Checkbox 
-                        checked={productData.discount} 
+                    control={<Checkbox checked={productData.discount} onChange={handleInputChange} name="discount" color="primary" />}
+                    label="Enable Discount"
+                  />
+                  
+                  {productData.discount && (
+                    <Box sx={{ ml: 3, mt: 2 }}>
+                      <TextField 
+                        label="Discount Percentage" 
+                        name="percentage_Discount" 
+                        type="number" 
+                        value={productData.percentage_Discount} 
                         onChange={handleInputChange} 
-                        name="discount"
-                        sx={{ 
-                          color: theme.palette.secondary.main,
-                          '&.Mui-checked': {
-                            color: theme.palette.custom.accent,
-                          },
-                        }}
-                      />
-                    }
-                    label="Discount Available"
-                    sx={{ color: theme.palette.neutral.main }}
-                  />
-                </Grid>
-                {productData.discount && (
-                  <>
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="Discount Percentage"
-                        name="percentage_Discount"
-                        type="number"
-                        value={productData.percentage_Discount}
-                        onChange={handleInputChange}
-                        required
                         InputProps={{ 
-                          endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                          endAdornment: <InputAdornment position="end">%</InputAdornment> 
                         }}
-                        sx={fieldStyles}
+                        size="small"
                       />
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="Discount Valid Until"
-                        name="valid_Until_Discount"
-                        type="date"
-                        InputLabelProps={{ shrink: true }}
-                        value={productData.valid_Until_Discount}
-                        onChange={handleInputChange}
-                        required
-                        sx={fieldStyles}
-                      />
-                    </Grid>
-                  </>
-                )}
-              </Grid>
-            </Grid>
-
-            {/* Additional Details Section */}
-            <Grid item xs={12} sx={{ mt: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Tag size={22} color={theme.palette.custom.accent} />
-                <Typography variant="h6" sx={{ 
-                  color: theme.palette.custom.accent, 
-                  ml: 1,
-                  fontWeight: 600,
-                  fontFamily: theme.typography.h3.fontFamily
-                }}>
-                  Additional Details
-                </Typography>
-              </Box>
-              <Divider sx={{ mb: 3, borderColor: theme.palette.shades.light }} />
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Materials"
-                    name="materials_Made"
-                    value={productData.materials_Made}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Alloy Metal, Kundan Stones, Beads"
-                    sx={fieldStyles}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.neutral.main }}>
-                    Product Tags
-                  </Typography>
-                  <Box sx={{ display: 'flex', mb: 1 }}>
-                    <TextField
-                      fullWidth
-                      placeholder="Add tags (press Enter after each tag)"
-                      value={tagInput}
-                      onChange={handleTagInput}
-                      onKeyDown={handleKeyDown}
-                      sx={fieldStyles}
-                    />
-                    <Button 
-                      onClick={addTag} 
-                      variant="contained"
-                      sx={{
-                        ml: 1,
-                        backgroundColor: theme.palette.custom.accent,
-                        fontFamily: theme.typography.button.fontFamily,
-                        textTransform: theme.typography.button.textTransform,
-                        height: 56,
-                        '&:hover': {
-                          backgroundColor: theme.palette.custom.highlight
-                        }
-                      }}
-                    >
-                      Add
-                    </Button>
-                  </Box>
-                  <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ mb: 2 }}>
-                    {tags.map((tag, index) => (
-                      <Chip
-                        key={index}
-                        label={tag}
-                        onDelete={() => removeTag(tag)}
-                        sx={{ 
-                          m: 0.5, 
-                          backgroundColor: theme.palette.shades.light,
-                          color: theme.palette.neutral.main,
-                          '& .MuiChip-deleteIcon': {
-                            color: theme.palette.neutral.main,
-                            '&:hover': {
-                              color: theme.palette.custom.highlight
-                            }
-                          }
-                        }}
-                      />
-                    ))}
-                  </Stack>
-                </Grid>
-
-                {/* Image Upload Section */}
-                <Grid item xs={12} sx={{ mt: 1 }}>
-                  <Typography variant="subtitle2" sx={{ mb: 1, color: theme.palette.neutral.main }}>
-                    Product Images
-                  </Typography>
-                  <input 
-                    accept="image/*" 
-                    style={{ display: 'none' }} 
-                    id="upload-images" 
-                    multiple 
-                    type="file" 
-                    onChange={handleImageUpload} 
-                  />
-                  <label htmlFor="upload-images">
-                    <Button 
-                      variant="contained" 
-                      component="span" 
-                      startIcon={<ImagePlus />}
-                      sx={{
-                        backgroundColor: theme.palette.custom.accent,
-                        fontFamily: theme.typography.button.fontFamily,
-                        textTransform: theme.typography.button.textTransform,
-                        '&:hover': {
-                          backgroundColor: theme.palette.custom.highlight
-                        }
-                      }}
-                    >
-                      Upload Images
-                    </Button>
-                  </label>
-                </Grid>
-                {images.length > 0 && (
-                  <Grid item xs={12}>
-                    <Box sx={{ 
-                      display: 'flex', 
-                      flexWrap: 'wrap', 
-                      gap: 2, 
-                      mt: 1,
-                      border: `1px dashed ${theme.palette.shades.medium}`,
-                      borderRadius: 2,
-                      p: 2,
-                      backgroundColor: theme.palette.tints.tint1
-                    }}>
-                      {images.map((img, index) => (
-                        <Box 
-                          key={index} 
-                          sx={{ 
-                            width: 100, 
-                            height: 100, 
-                            overflow: 'hidden', 
-                            borderRadius: 2, 
-                            border: `1px solid ${theme.palette.secondary.light}`,
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-                          }}
-                        >
-                          <img 
-                            src={img.preview} 
-                            alt={`upload-${index}`} 
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                          />
-                        </Box>
-                      ))}
                     </Box>
-                  </Grid>
-                )}
+                  )}
+                </Grid>
               </Grid>
-            </Grid>
+            </Card>
+          </Grid>
 
-            {/* Submit Button */}
-            <Grid item xs={12} sx={{ mt: 2 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+          {/* Right Column - Images and Tags */}
+          <Grid item xs={12} md={4}>
+            <Card sx={{ p: 3, mb: 3, borderRadius: 2 }}>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 500 }}>Product Images</Typography>
+              
+              <input 
+                accept="image/*" 
+                style={{ display: 'none' }} 
+                id="upload-images" 
+                multiple 
+                type="file" 
+                onChange={handleImageUpload} 
+              />
+              <label htmlFor="upload-images">
                 <Button 
-                  type="submit" 
-                  variant="contained" 
-                  startIcon={<Plus />} 
+                  variant="primary" 
+                  component="span" 
+                  startIcon={<ImagePlus />} 
+                  fullWidth
                   sx={{ 
-                    px: 5, 
-                    py: 1.5,
-                    backgroundColor: theme.palette.custom.accent,
-                    color: theme.palette.primary.main,
-                    borderRadius: 2,
-                    fontWeight: 600,
-                    fontFamily: theme.typography.button.fontFamily,
-                    textTransform: theme.typography.button.textTransform,
-                    '&:hover': {
-                      backgroundColor: theme.palette.custom.highlight
-                    }
+                    py: 1.5, 
+                    borderStyle: 'dashed', 
+                    borderWidth: 1,
+                    background: "#c17912",
                   }}
                 >
-                  Add Product
+                  Upload Images
                 </Button>
+              </label>
+              
+              <Box sx={{ mt: 3 }}>
+                <Grid container spacing={2}>
+                  {images.map((img, index) => (
+                    <Grid item xs={6} key={index}>
+                      <Box sx={{ 
+                        position: 'relative', 
+                        borderRadius: 1,
+                        overflow: 'hidden',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                      }}>
+                        <img 
+                          src={img.preview} 
+                          alt={`upload-${index}`} 
+                          style={{ 
+                            width: '100%', 
+                            height: 120, 
+                            objectFit: 'cover' 
+                          }} 
+                        />
+                        <IconButton 
+                          size="small" 
+                          sx={{ 
+                            position: 'absolute', 
+                            top: 4, 
+                            right: 4, 
+                            backgroundColor: 'rgba(255,255,255,0.8)',
+                            '&:hover': {
+                              backgroundColor: 'rgba(255,255,255,0.9)'
+                            }
+                          }}
+                          onClick={() => removeImage(index)}
+                        >
+                          <X size={16} />
+                        </IconButton>
+                      </Box>
+                    </Grid>
+                  ))}
+                </Grid>
               </Box>
-            </Grid>
+            </Card>
+
+            <Card sx={{ p: 3, borderRadius: 2 }}>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 500 }}>Product Tags</Typography>
+              
+              <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+                <TextField 
+                  placeholder="Add tag" 
+                  value={tagInput} 
+                  onChange={(e) => setTagInput(e.target.value)} 
+                  sx={{ flex: 1 }}
+                  size="small"
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start"><Tag size={16} /></InputAdornment>,
+                  }}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      addTag();
+                    }
+                  }}
+                />
+                <Button 
+                  variant="primary"
+                  sx={{
+                    background: "#c17912",
+                  }}
+                  onClick={addTag}
+                >
+                  Add
+                </Button>
+              </Stack>
+              
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                {productData.tags.map((tag, index) => (
+                  <Chip 
+                    key={index} 
+                    label={tag} 
+                    onDelete={() => removeTag(tag)} 
+                    sx={{ mb: 1 }}
+                  />
+                ))}
+              </Box>
+            </Card>
           </Grid>
+        </Grid>
+
+        {/* Footer Submit Button */}
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          mt: 4, 
+          mb: 4 
+        }}>
+          <Button 
+            variant="contained" 
+            startIcon={<Save />} 
+            sx={{ 
+              px: 4, 
+              py: 1.5, 
+              borderRadius: 2,
+              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+            }}
+          >
+            Save Product
+          </Button>
         </Box>
-      </Paper>
+      </Box>
     </Box>
   );
 };
