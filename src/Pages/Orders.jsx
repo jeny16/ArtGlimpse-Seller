@@ -472,16 +472,12 @@ const OrderManagement = () => {
             <TableBody>
               {paginatedOrders.map((order) => {
                 // Handle different order structures (unify them)
-                const orderId =
-                  typeof order.id === "object" && order.id.date
-                    ? order.id.date
-                    : order.id || "N/A";
-
+                const orderId = order?.orderRef ?? "N/A";
                 const orderTitle =
                   order.title ||
                   (order.shippingAddress?.name
                     ? `Order for ${order.shippingAddress.name}`
-                    : `Order #${orderId.substring(0, 8)}`);
+                    : `Order #${orderId}`);
 
                 const orderItems = order.items || [];
                 const orderDate = order?.createdAt || "N/A";
@@ -505,9 +501,7 @@ const OrderManagement = () => {
                         whiteSpace: "nowrap",
                       }}
                     >
-                      {typeof orderId === "string"
-                        ? orderId.substring(0, 8)
-                        : orderId}
+                      {orderId}
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2" fontWeight="medium">

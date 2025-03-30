@@ -114,7 +114,7 @@ const RecentOrders = () => {
                   <ListItemText
                     primary={
                       <Typography fontWeight={500}>
-                        {order.title || `Order #${order._id || order.id}`}
+                        {order.title || `Order #${order.orderRef}`}
                       </Typography>
                     }
                     secondary={
