@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { format } from "date-fns";
+import orderService from "../action/orderService";
 
 // Helper function to safely extract string IDs
 const extractId = (idField) => {
@@ -10,54 +10,26 @@ const extractId = (idField) => {
   return idField;
 };
 
-// Thunk to fetch orders using sellerProfileId
+// Thunk to fetch orders using orderService
 export const fetchOrders = createAsyncThunk("orders/fetch", async (_, thunkAPI) => {
   try {
-    const storedUser = JSON.parse(localStorage.getItem("user"));
-    const token = storedUser?.token;
-    const sellerId = storedUser?.sellerId;
-
-    if (!token || !sellerId) {
-      return thunkAPI.rejectWithValue("Missing authentication or seller ID.");
-    }
-
-    const response = await axios.get(`http://localhost:8081/api/ordersList/recent/${sellerId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    return response.data;
+    const data = await orderService.fetchOrders();
+    console.log("response inside fetchOrders:", data);
+    return data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.response?.data || "Failed to fetch");
+    return thunkAPI.rejectWithValue(error);
   }
 });
 
-// Thunk to update order status
+// Thunk to update order status using orderService
 export const updateOrderStatus = createAsyncThunk(
   "orders/updateStatus",
   async ({ orderId, newStatus }, thunkAPI) => {
     try {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
-      const token = storedUser?.token;
-
-      if (!token) {
-        return thunkAPI.rejectWithValue("Unauthorized: No token found.");
-      }
-
-      const response = await axios.patch(
-        `http://localhost:8081/api/ordersList/${orderId}`,
-        { paymentStatus: newStatus },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      return response.data;
+      const data = await orderService.updateOrderStatus({ orderId, newStatus });
+      return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || "Failed to update status");
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -78,11 +50,15 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrders.fulfilled, (state, action) => {
         state.loading = false;
+        // Log the state as a plain object rather than a Proxy
+        console.log("order inside fetchOrders:", JSON.parse(JSON.stringify(state)));
         state.orders = action.payload.map((order) => ({
           ...order,
           id: extractId(order.id),
-          sellerId: extractId(order.sellerId),
+          sellerId: order.sellerId ? extractId(order.sellerId) : null,
           userId: extractId(order.userId),
+          // Use the new orderStatus field; if missing, default based on paymentStatus
+          status: order.orderStatus ? order.orderStatus : (order.paymentStatus === "PAID" ? "New" : "Processing"),
           createdAt: order.createdAt ? format(new Date(order.createdAt), "yyyy-MM-dd HH:mm:ss") : null,
           items: order.items.map((item) => ({
             ...item,
@@ -94,14 +70,14 @@ const orderSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-
       // Update order status
       .addCase(updateOrderStatus.fulfilled, (state, action) => {
         const updatedOrder = action.payload;
-        const index = state.orders.findIndex((order) => order.id === updatedOrder.id);
+        const index = state.orders.findIndex((order) => order.id === extractId(updatedOrder.id));
         if (index !== -1) {
           state.orders[index] = {
             ...state.orders[index],
+            status: updatedOrder.orderStatus,
             paymentStatus: updatedOrder.paymentStatus,
           };
         }

@@ -6,6 +6,8 @@ import { Box } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { logout } from "./store/authSlice";
 import axios from "axios";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Layout = () => {
   const dispatch = useDispatch();
@@ -33,23 +35,24 @@ const Layout = () => {
     validateToken();
   }, [dispatch]);
   return (
-    <Box>  
-    <Header />
-    <Box
-      component="main"
-      sx={{
-        flexGrow: 1,
-        // p: 1,
-        mt: 20,
-        width: "100%",
-        maxWidth: "1200px",
-        mx: "auto", 
-      }}
-    >
-      <Outlet />
+    <Box>
+      <Header />
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          // p: 1,
+          width: "100%",
+          // maxWidth: "1200px",
+          mx: "auto",
+          minHeight: "100vh"
+        }}
+      >
+        <Outlet />
+        <ToastContainer position='top-right' />
+      </Box>
+      <Footer />
     </Box>
-    <Footer />
-  </Box>
   );
 };
 

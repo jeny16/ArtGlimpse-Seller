@@ -1,52 +1,64 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Layout from './Layout';
-import HomePage from './Pages/HomePage'; 
-import { ThemeProvider } from '@emotion/react';
-import theme from './style/Theme';
-import { CssBaseline } from '@mui/material';
-import AddProduct from './Pages/AddProduct';
-import Analytics from './Pages/AnalyticsPage';
-import Inventory from './Pages/Inventory';
-import OrderManagement from './Pages/Orders';
-import store from './store/store';
-import { Provider } from 'react-redux';
-import AuthLayout from './components/common/AuthLayout';
-import Login from './components/Login';
-import Signup from './components/Signup';
-import SellerProfile from './Pages/Profile';
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import Layout from "./Layout";
+import { ThemeProvider } from "@emotion/react";
+import theme from "./style/Theme";
+import { CssBaseline } from "@mui/material";
+import AddProduct from "./Pages/AddProduct";
+import Analytics from "./Pages/AnalyticsPage";
+import Inventory from "./Pages/Inventory";
+import OrderManagement from "./Pages/Orders";
+import OrderDetailsPage from "./Pages/OrderDetailsPage";
+import store from "./store/store";
+import { Provider, useSelector } from "react-redux";
+import AuthLayout from "./components/common/AuthLayout";
+import LoginPage from "./Pages/LoginPage";
+import SignupPage from "./Pages/SignupPage";
+import SellerProfile from "./Pages/Profile";
+import HomeDashBoard from "./Pages/HomeDashBoard";
+import HomePage from "./Pages/HomePage";
+import React from "react";
 
+// 🔁 Redirect based on login status
+const RedirectRoot = () => {
+  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  return <Navigate to={isLoggedIn ? "/dashboard" : "/home"} />;
+};
 
-// Define routes outside of the App component
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
     children: [
       {
-        path: "/",
-        element: <HomePage />,
+        index: true,
+        element: <RedirectRoot />,
       },
       {
-        path: "/add-product",
-        element: <AddProduct />
+        path: "/dashboard",
+        element: (
+          <AuthLayout authentication={true}>
+            <HomeDashBoard />
+          </AuthLayout>
+        ),
       },
       {
-        path: "/analytics",
-        element: <Analytics />
+        path: "/home",
+        element: (
+          <AuthLayout authentication={false}>
+            <HomePage />
+          </AuthLayout>
+        ),
       },
-      {
-        path: "/inventory",
-        element: <Inventory />
-      },
-      {
-        path: "/orders",
-        element: <OrderManagement />
-      },
+      { path: "/add-product", element: <AddProduct /> },
+      { path: "/analytics", element: <Analytics /> },
+      { path: "/inventory", element: <Inventory /> },
+      { path: "/orders", element: <OrderManagement /> },
+      { path: "/orders/:orderId", element: <OrderDetailsPage /> },
       {
         path: "/login",
         element: (
           <AuthLayout authentication={false}>
-            <Login />
+            <LoginPage />
           </AuthLayout>
         ),
       },
@@ -54,15 +66,18 @@ const router = createBrowserRouter([
         path: "/signup",
         element: (
           <AuthLayout authentication={false}>
-            <Signup />
+            <SignupPage />
           </AuthLayout>
         ),
       },
       {
         path: "/profile",
-        element: <SellerProfile />
+        element: (
+          <AuthLayout authentication={true}>
+            <SellerProfile />
+          </AuthLayout>
+        ),
       },
-      // Add more routes as needed
     ],
   },
 ]);
@@ -70,10 +85,10 @@ const router = createBrowserRouter([
 const App = () => {
   return (
     <Provider store={store}>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <RouterProvider router={router} />
-    </ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </Provider>
   );
 };
