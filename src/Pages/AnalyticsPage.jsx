@@ -62,16 +62,36 @@ const SellerAnalytics = () => {
         }
         const data = await response.json();
         // Use fallback empty arrays if properties are missing
+        // setStats({
+        //   totalRevenue: data.totalRevenue,
+        //   totalOrders: data.totalOrders,
+        //   productsSold: data.productsSold || 0,
+        //   conversionRate: data.conversionRate,
+        //   visitors: data.visitors || 0,
+        //   revenueData: data.revenueData || [],
+        //   productPerformance: data.productPerformance || [],
+        //   salesTimeline: data.salesTimeline || []
+        // });
         setStats({
           totalRevenue: data.totalRevenue,
           totalOrders: data.totalOrders,
           productsSold: data.productsSold || 0,
           conversionRate: data.conversionRate,
           visitors: data.visitors || 0,
-          revenueData: data.revenueData || [],
-          productPerformance: data.productPerformance || [],
-          salesTimeline: data.salesTimeline || []
+          revenueData: data.revenueData || [ 
+            { name: "Jan", Revenue: 4000, Orders: 2400 },
+            { name: "Feb", Revenue: 3000, Orders: 1398 }
+          ],
+          productPerformance: data.productPerformance || [
+            { name: "Earrings", Sales: 400, Revenue: 2400 },
+            { name: "Necklace", Sales: 300, Revenue: 1398 }
+          ],
+          salesTimeline: data.salesTimeline || [
+            { date: "June 15", event: "Highest Daily Sales", amount: "₹5,400" },
+            { date: "June 10", event: "New Product Launch", amount: "26 Units Sold" }
+          ]
         });
+        
       } catch (err) {
         setError(err.message);
       } finally {
@@ -192,6 +212,7 @@ const SellerAnalytics = () => {
                   No revenue data available.
                 </Typography>
               )}
+              {console.log("jeihu",stats.revenueData.length)}
             </CardContent>
           </Card>
         </Grid>

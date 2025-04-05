@@ -1,27 +1,26 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
-export const fetchStats = createAsyncThunk("stats/fetchStats", async (_, { getState }) => {
-    const state = getState();
-    const token = state.auth.token; // Make sure token is available
+// Thunk to fetch stats with auth token
+export const fetchStats = createAsyncThunk('stats/fetchStats', async (_, { rejectWithValue }) => {
+  try {
+    const userdata = JSON.parse(localStorage.getItem('user'));
+    const token = userdata?.token;
 
-    const response = await fetch("http://localhost:8081/api/stats", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`, // Add the token here
-        }
+    const response = await axios.get('http://localhost:8081/api/stats', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
-    if (!response.ok) {
-        throw new Error("Failed to fetch stats");
-    }
-
-    return await response.json();
+    return response.data;
+  } catch (error) {
+    console.error('Stats Fetch Error:', error.response?.data || error.message);
+    return rejectWithValue(error.response?.data || 'Something went wrong');
+  }
 });
 
-  
-
-const statsSlice = createSlice({
+const statSlice = createSlice({
   name: 'stats',
   initialState: {
     stats: {},
@@ -46,4 +45,4 @@ const statsSlice = createSlice({
   },
 });
 
-export default statsSlice.reducer;
+export default statSlice.reducer;

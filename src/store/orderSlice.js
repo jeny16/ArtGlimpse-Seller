@@ -68,7 +68,7 @@ const orderSlice = createSlice({
             orderRef : order.orderRef,
           })),
         }));
-        state.orders = transformedOrders;
+        // state.orders = transformedOrders;
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.loading = false;
