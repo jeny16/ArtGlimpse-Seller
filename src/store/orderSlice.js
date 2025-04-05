@@ -5,7 +5,9 @@ import orderService from "../action/orderService";
 // Helper function to safely extract string IDs
 const extractId = (idField) => {
   if (typeof idField === "object" && idField !== null) {
-    return idField.$oid || String(idField);
+    if (idField.$oid) return idField.$oid;
+    if (idField.date) return idField.date;
+    return String(idField);
   }
   return idField;
 };
@@ -63,8 +65,10 @@ const orderSlice = createSlice({
           items: order.items.map((item) => ({
             ...item,
             productId: extractId(item.productId),
+            orderRef : order.orderRef,
           })),
         }));
+        state.orders = transformedOrders;
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.loading = false;
