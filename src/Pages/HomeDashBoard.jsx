@@ -9,7 +9,6 @@ import {
   useTheme,
   Fab,
   Badge,
-  IconButton,
   Popover,
   Paper,
   Grow,
@@ -24,29 +23,39 @@ import {
   Package,
   TrendingUp,
   DollarSign,
-  Settings,
   Bell,
-  X,
   ShoppingBagIcon
 } from 'lucide-react';
-import { StatCard, QuickActionCard, RecentOrders, ProductPerformance, NotificationWidget } from '../components/index';
+import {
+  StatCard,
+  QuickActionCard,
+  RecentOrders,
+  ProductPerformance,
+  NotificationWidget
+} from '../components/index';
 import { useNavigate } from 'react-router-dom';
 
 const HomeDashBoard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { stats, loading, error } = useSelector((state) => state.stats);
+  const userdata = JSON.parse(localStorage.getItem('user'));
+  const token = userdata?.token;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Notification state
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const notificationAnchorRef = useRef(null);
-
+  
   useEffect(() => {
-    dispatch(fetchStats());
-  }, [dispatch]);
-
+    if (token) {
+      dispatch(fetchStats());
+    }
+  }, [dispatch, token]);
+  
+  console.log("Current stats state:", stats);
+  
+  
   const toggleNotifications = () => {
     setNotificationsOpen((prevOpen) => !prevOpen);
   };
@@ -58,34 +67,13 @@ const HomeDashBoard = () => {
     setNotificationsOpen(false);
   };
 
-  // Mock data for notification count
   const unreadNotifications = 3;
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        my: 16, minHeight: "100vh", px: 2, py: 4,
-
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          width: "100%",
-          maxWidth: "lg",
-        }}
-      >
-        {/* Welcome Section */}
+    <Box sx={{ display: "flex", my: 16, minHeight: "100vh", px: 2, py: 4, flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+      <Box component="main" sx={{ flexGrow: 1, width: "100%", maxWidth: "lg" }}>
         <Box sx={{ mb: 4 }}>
-          <Typography
-            variant="h4"
-            sx={{ fontWeight: 700, color: "text.primary" }}
-          >
+          <Typography variant="h4" sx={{ fontWeight: 700, color: "text.primary" }}>
             {/* SELLER-PORTAL */}
           </Typography>
         </Box>
@@ -136,103 +124,55 @@ const HomeDashBoard = () => {
 
         {/* Main Dashboard Content */}
         <Grid container spacing={3}>
-          {/* Quick Actions Section */}
           <Grid item xs={12} md={4}>
-            <Card
-              sx={{
-                borderRadius: 2,
-                boxShadow: "0 0 10px rgba(0,0,0,0.05)",
-                overflow: "visible",
-              }}
-            >
+            <Card sx={{ borderRadius: 2, boxShadow: "0 0 10px rgba(0,0,0,0.05)", overflow: "visible" }}>
               <CardContent sx={{ p: 3 }}>
                 <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
                   Quick Actions
                 </Typography>
-
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                    <QuickActionCard
-                      icon={Package}
-                      title="Inventory"
-                      description="Manage stock"
-                      onClick={() => navigate("/inventory")}
-                    />
+                    <QuickActionCard icon={Package} title="Inventory" description="Manage stock" onClick={() => navigate("/inventory")} />
                   </Grid>
                   <Grid item xs={12}>
-                    <QuickActionCard
-                      icon={ShoppingBagIcon}
-                      title="Orders"
-                      description="See all Orders"
-                      onClick={() => navigate("/orders")}
-                    />
+                    <QuickActionCard icon={ShoppingBagIcon} title="Orders" description="See all Orders" onClick={() => navigate("/orders")} />
                   </Grid>
                   <Grid item xs={12}>
-                    <QuickActionCard
-                      icon={PlusCircle}
-                      title="Add Product"
-                      description="Add new items"
-                      onClick={() => navigate("/add-product")}
-                    />
+                    <QuickActionCard icon={PlusCircle} title="Add Product" description="Add new items" onClick={() => navigate("/add-product")} />
                   </Grid>
                   <Grid item xs={12}>
-                    <QuickActionCard
-                      icon={BarChart2}
-                      title="Analytics"
-                      description="Check performance"
-                      onClick={() => navigate("/analytics")}
-                    />
+                    <QuickActionCard icon={BarChart2} title="Analytics" description="Check performance" onClick={() => navigate("/analytics")} />
                   </Grid>
                 </Grid>
               </CardContent>
             </Card>
           </Grid>
 
-          {/* Main Dashboard Widgets */}
           <Grid item xs={12} md={8}>
             <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <RecentOrders />
-              </Grid>
-              <Grid item xs={12}>
-                <ProductPerformance />
-              </Grid>
+              <Grid item xs={12}><RecentOrders /></Grid>
+              <Grid item xs={12}><ProductPerformance /></Grid>
             </Grid>
           </Grid>
         </Grid>
       </Box>
 
-      {/* Mobile floating button to toggle notifications */}
       <Fab
         color="primary"
         aria-label="notifications"
-        sx={{
-          position: "fixed",
-          bottom: 16,
-          right: 16,
-          display: { xs: "flex", md: "flex" }, // Show on both mobile and desktop
-        }}
+        sx={{ position: "fixed", bottom: 16, right: 16, display: { xs: "flex", md: "flex" } }}
         onClick={toggleNotifications}
         ref={notificationAnchorRef}
       >
-        <Badge badgeContent={unreadNotifications} color="error">
-          <Bell />
-        </Badge>
+        <Badge badgeContent={unreadNotifications} color="error"><Bell /></Badge>
       </Fab>
 
-      {/* Notification Popover/Popup */}
       <Popover
         open={notificationsOpen}
         anchorEl={notificationAnchorRef.current}
         onClose={handleCloseNotifications}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
-        }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        transformOrigin={{ vertical: "bottom", horizontal: "right" }}
         sx={{
           "& .MuiPopover-paper": {
             width: { xs: "90%", sm: 350 },
