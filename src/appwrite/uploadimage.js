@@ -1,12 +1,12 @@
-import { storage } from './appwriteConfig';
+import { storage, Permission, Role, ID } from 'appwrite';
 
-// Async function to upload image to Appwrite
-const uploadImageToAppwrite = async (file) => {
+export const uploadImageToAppwrite = async (file) => {
   try {
     const response = await storage.createFile(
       '67f226020009ef702b5c', // Your bucket ID
-      generateUniqueId(),      // Unique file ID
-      file
+      ID.unique(),             // Use Appwrite's built-in unique ID generator
+      file,
+      [Permission.read(Role.any())]  // Grants public read access
     );
     return response.$id;
   } catch (error) {

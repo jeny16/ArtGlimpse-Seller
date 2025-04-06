@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { storage } from '../appwrite/appwriteConfig';
-import { ID } from 'appwrite'; // ✅ Import this to use ID.unique()
+import { ID, Permission, Role } from 'appwrite'; // ✅ Import this to use ID.unique()
 
 // Async function to upload image to Appwrite
 const uploadImageToAppwrite = async (file) => {
@@ -9,7 +9,8 @@ const uploadImageToAppwrite = async (file) => {
     const response = await storage.createFile(
       '67f226020009ef702b5c', // Your bucket ID
       ID.unique(),
-      file
+      file,
+      [Permission.read(Role.any())] 
     );
     console.log('✅ File uploaded:', response);
     return response.$id;
