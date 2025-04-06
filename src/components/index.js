@@ -16,6 +16,17 @@ import StatCard from './StatCard'
 import ProductPerformance from './ProductPerformance'
 import { ORDER_STATUS, getStatusChip, allowedTransitions, isValidTransition } from './ordersStatus'
 import Loader from './common/Loader'
+import CategoriesDisplay from './profile/CategoriesDisplay'
+import StoreDetailFieldDisplay from './profile/StoreDetailFieldDisplay'
+import StoreDetailsForm from './profile/StoreDetailsForm'
+import StoreDetails from './profile/StoreDetails'
+import StoreDetailsHeader from './profile/StoreDetailsHeader'
+import SellerProfile from './profile/SellerProfile'
+import PaymentDetails from './profile/PaymentDetails'
+import TermsAndConditions from './profile/Terms'
+import Privacy from './profile/Privacy'
+import DeleteAccount from './profile/DeleteAccount'
+import ProfileSidebar from './profile/ProfileSideBar'
 
 export {
     Header,
@@ -39,4 +50,15 @@ export {
     StatCard,
     ProductPerformance,
     Loader,
+    CategoriesDisplay,
+    StoreDetailFieldDisplay,
+    StoreDetailsForm,
+    StoreDetails,
+    StoreDetailsHeader,
+    SellerProfile,
+    PaymentDetails,
+    TermsAndConditions,
+    Privacy,
+    DeleteAccount,
+    ProfileSidebar,
 }

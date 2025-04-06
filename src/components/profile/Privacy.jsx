@@ -1,16 +1,5 @@
 import React, { useState } from 'react';
-import {
-    Box,
-    Typography,
-    Paper,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
-    Divider,
-    Button,
-    Container,
-    Link
-} from '@mui/material';
+import { Box, Typography, Paper, Accordion, AccordionSummary, AccordionDetails, Divider, Button, Container } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SecurityIcon from '@mui/icons-material/Security';
 import EmailIcon from '@mui/icons-material/Email';
@@ -26,37 +15,37 @@ const Privacy = () => {
         {
             id: 'introduction',
             title: '1. Introduction',
-            content: `ArtGlimpse is dedicated to ensuring your privacy and security. This Privacy Policy details how we collect, use, share, and protect your personal data when you interact with our services. We believe transparency is key to building trust with our community.`
+            content: `ArtGlimpse is committed to protecting your privacy as a seller. This Privacy Policy outlines how we collect, use, and safeguard your business data and personal information.`
         },
         {
             id: 'data-collection',
             title: '2. Data Collection',
-            content: `We collect information that you provide directly—such as your name, email, shipping address, and payment details—as well as data generated during your interactions with our website (e.g., browsing patterns and search queries). This helps us tailor your experience and improve our offerings.`
+            content: `We collect information provided by you, such as your business name, contact details, and address, along with data generated during your interactions with our platform.`
         },
         {
             id: 'data-usage',
             title: '3. How We Use Your Data',
-            content: `Your information is used to process orders, deliver personalized recommendations, and enhance our products and services. Additionally, we analyze your usage data to optimize our platform and communicate updates, promotions, and important service notifications to you.`
+            content: `Your information is used to manage your seller account, process transactions, provide customer support, and improve our services. We also analyze usage data to optimize your experience.`
         },
         {
             id: 'data-sharing',
             title: '4. Data Sharing and Third Parties',
-            content: `We do not sell your personal data. However, we may share your information with trusted third-party partners who help us operate our platform, process transactions, and provide a seamless user experience. All partners must adhere to strict confidentiality guidelines.`
+            content: `We do not sell your personal data. However, we may share your information with trusted partners for service delivery and operational purposes, under strict confidentiality agreements.`
         },
         {
             id: 'cookies',
             title: '5. Cookies and Tracking',
-            content: `Our website uses cookies and similar tracking technologies to remember your preferences, manage sessions, and offer personalized content. These tools allow us to analyze site traffic and improve our services. You can manage your cookie settings through your browser.`
+            content: `Our platform uses cookies and similar technologies to enhance your experience, manage sessions, and offer personalized content. You can manage your cookie preferences through your browser.`
         },
         {
             id: 'your-rights',
             title: '6. Your Rights',
-            content: `You have the right to access, update, or delete your personal information at any time. If you suspect any misuse or have questions about how your data is handled, please contact our support team. We are committed to promptly addressing any concerns you may have.`
+            content: `As a seller, you have the right to access, update, or delete your information. For any concerns regarding your data, please contact our support team.`
         },
         {
             id: 'security',
             title: '7. Security & Updates',
-            content: `We implement industry-leading security measures to safeguard your data. Although no system can be completely impervious, we continually work to ensure your information is protected. This Privacy Policy may be updated periodically—any significant changes will be posted on our website.`
+            content: `We implement robust security measures to protect your data. Although no system is infallible, we continually update our practices to safeguard your information.`
         }
     ];
 
@@ -70,7 +59,6 @@ const Privacy = () => {
                     backgroundColor: 'tints.tint3'
                 }}
             >
-                {/* Header */}
                 <Box
                     sx={{
                         p: 4,
@@ -96,12 +84,10 @@ const Privacy = () => {
                     </Box>
                 </Box>
 
-                {/* Content */}
                 <Box sx={{ p: { xs: 3, md: 5 } }}>
                     <Typography variant="body1" paragraph>
-                        At ArtGlimpse, we value your trust and are committed to safeguarding your personal data. Below you will find details on our data practices and your rights.
+                        At ArtGlimpse, we value your trust and are committed to protecting your data as a seller. Below are details on our data practices.
                     </Typography>
-
                     {privacySections.map((section) => (
                         <Accordion
                             key={section.id}
@@ -138,7 +124,6 @@ const Privacy = () => {
 
                     <Divider sx={{ my: 4 }} />
 
-                    {/* Contact Information */}
                     <Box sx={{ textAlign: 'center' }}>
                         <Typography variant="h6" fontWeight="bold" sx={{ color: 'custom.highlight', mb: 1 }}>
                             Contact Us

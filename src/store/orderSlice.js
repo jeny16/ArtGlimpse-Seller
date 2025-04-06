@@ -12,18 +12,20 @@ const extractId = (idField) => {
   return idField;
 };
 
-// Thunk to fetch orders using orderService
+// Thunk to fetch orders
 export const fetchOrders = createAsyncThunk("orders/fetch", async (_, thunkAPI) => {
   try {
     const data = await orderService.fetchOrders();
     console.log("response inside fetchOrders:", data);
     return data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(error);
+    return thunkAPI.rejectWithValue(
+      error?.response?.data?.message || error?.message || "Failed to fetch orders"
+    );
   }
 });
 
-// Thunk to update order status using orderService
+// Thunk to update order status
 export const updateOrderStatus = createAsyncThunk(
   "orders/updateStatus",
   async ({ orderId, newStatus }, thunkAPI) => {
@@ -31,7 +33,9 @@ export const updateOrderStatus = createAsyncThunk(
       const data = await orderService.updateOrderStatus({ orderId, newStatus });
       return data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error);
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || error?.message || "Failed to update order status"
+      );
     }
   }
 );
@@ -52,28 +56,27 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrders.fulfilled, (state, action) => {
         state.loading = false;
-        // Log the state as a plain object rather than a Proxy
-        console.log("order inside fetchOrders:", JSON.parse(JSON.stringify(state)));
         state.orders = action.payload.map((order) => ({
           ...order,
           id: extractId(order.id),
           sellerId: order.sellerId ? extractId(order.sellerId) : null,
           userId: extractId(order.userId),
-          // Use the new orderStatus field; if missing, default based on paymentStatus
           status: order.orderStatus ? order.orderStatus : (order.paymentStatus === "PAID" ? "New" : "Processing"),
           createdAt: order.createdAt ? format(new Date(order.createdAt), "yyyy-MM-dd HH:mm:ss") : null,
           items: order.items.map((item) => ({
             ...item,
             productId: extractId(item.productId),
-            orderRef : order.orderRef,
+            orderRef: order.orderRef,
           })),
         }));
-        // state.orders = transformedOrders;
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = typeof action.payload === "string"
+          ? action.payload
+          : action.payload?.message || "Failed to fetch orders";
       })
+
       // Update order status
       .addCase(updateOrderStatus.fulfilled, (state, action) => {
         const updatedOrder = action.payload;
@@ -87,7 +90,9 @@ const orderSlice = createSlice({
         }
       })
       .addCase(updateOrderStatus.rejected, (state, action) => {
-        state.error = action.payload;
+        state.error = typeof action.payload === "string"
+          ? action.payload
+          : action.payload?.message || "Failed to update order status";
       });
   },
 });
