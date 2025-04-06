@@ -1,13 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Box, Typography, TextField, Button, Grid, Paper, FormControl, InputLabel, Select, MenuItem,
-  Checkbox, FormControlLabel, InputAdornment, Divider, Chip, Stack, IconButton, Card
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Checkbox,
+  FormControlLabel,
+  InputAdornment,
+  Chip,
+  Stack,
+  IconButton,
+  Card,
+  CircularProgress
 } from "@mui/material";
-import { ImagePlus, Plus, Tag, Package2, X, Save, ArrowRight } from 'lucide-react';
+import { ImagePlus, Tag, Package2, X, Save } from 'lucide-react';
 import { useTheme } from '@mui/material/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { createProduct, resetAddProductState } from '../store/addProductSlice'; // Adjust the import path as needed
 
 const AddProduct = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const { product, isLoading, error, success } = useSelector((state) => state.addProduct);
+
   const [productData, setProductData] = useState({
     name: '',
     description: '',
@@ -56,17 +76,87 @@ const AddProduct = () => {
     setImages(newImages);
   };
 
+  // Use FormData for file upload
+  const handleSubmit = () => {
+    const form = new FormData();
+
+    form.append('name', productData.name);
+    form.append('description', productData.description);
+    form.append('price', productData.price);
+    form.append('stock', productData.stock);
+    form.append('category', productData.category);
+    form.append('discount', productData.discount);
+    form.append('percentage_Discount', productData.percentage_Discount);
+    
+    const materialsArray = productData.materials_Made
+    .split(',')
+    .map((m) => m.trim())
+    .filter((m) => m.length > 0);
+
+  materialsArray.forEach((material) => {
+    form.append('materials_Made', material);
+  });
+
+  productData.tags.forEach((tag) => {
+    form.append('tags', tag);
+  });
+
+  images.forEach((img, index) => {
+    form.append(`image_${index}`, img.file);
+  });
+    
+
+    const storedUser = localStorage.getItem('user');
+    let sellerId = '';
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        sellerId = parsedUser.user?.id || parsedUser.sellerId || '';
+      } catch (error) {
+        console.error('Error parsing stored user:', error);
+      }
+    }
+
+    dispatch(createProduct(form));
+  };
+
+  // Clear form and reset state on successful product creation
+  useEffect(() => {
+    if (success) {
+      setProductData({
+        name: '',
+        description: '',
+        price: '',
+        stock: '',
+        category: '',
+        discount: false,
+        percentage_Discount: '',
+        materials_Made: '',
+        tags: []
+      });
+      setImages([]);
+      dispatch(resetAddProductState());
+    }
+  }, [success, dispatch]);
+
   return (
-    <Box sx={{ 
-      minHeight: '100vh', 
-      p: { xs: 2, md: 4 }, 
-      backgroundColor: '#f5f5f5'
-    }}>
+    <Box sx={{ minHeight: '100vh', p: { xs: 2, md: 4 }, backgroundColor: '#f5f5f5' }}>
       <Box sx={{ maxWidth: 1200, margin: 'auto' }}>
         <Typography variant="h4" sx={{ fontWeight: '600', mb: 4, pt: 3 }}>
           Add New Product
         </Typography>
         
+        {error && (
+          <Typography color="error" sx={{ mb: 2 }}>
+            {error}
+          </Typography>
+        )}
+        {success && (
+          <Typography color="primary" sx={{ mb: 2 }}>
+            Product added successfully!
+          </Typography>
+        )}
+
         <Grid container spacing={3}>
           {/* Left Column - Main Details */}
           <Grid item xs={12} md={8}>
@@ -199,7 +289,7 @@ const AddProduct = () => {
               />
               <label htmlFor="upload-images">
                 <Button 
-                  variant="primary" 
+                  variant="contained" 
                   component="span" 
                   startIcon={<ImagePlus />} 
                   fullWidth
@@ -207,7 +297,7 @@ const AddProduct = () => {
                     py: 1.5, 
                     borderStyle: 'dashed', 
                     borderWidth: 1,
-                    background: "#c17912",
+                    backgroundColor: "#c17912"
                   }}
                 >
                   Upload Images
@@ -276,9 +366,9 @@ const AddProduct = () => {
                   }}
                 />
                 <Button 
-                  variant="primary"
+                  variant="contained"
                   sx={{
-                    background: "#c17912",
+                    backgroundColor: "#c17912",
                   }}
                   onClick={addTag}
                 >
@@ -301,23 +391,15 @@ const AddProduct = () => {
         </Grid>
 
         {/* Footer Submit Button */}
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'flex-end', 
-          mt: 4, 
-          mb: 4 
-        }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4, mb: 4 }}>
           <Button 
             variant="contained" 
-            startIcon={<Save />} 
-            sx={{ 
-              px: 4, 
-              py: 1.5, 
-              borderRadius: 2,
-              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-            }}
+            startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <Save />} 
+            sx={{ px: 4, py: 1.5, borderRadius: 2 }}
+            onClick={handleSubmit}
+            disabled={isLoading}
           >
-            Save Product
+            {isLoading ? 'Saving...' : 'Save Product'}
           </Button>
         </Box>
       </Box>
