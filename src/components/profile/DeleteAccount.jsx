@@ -12,21 +12,21 @@ import {
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useSelector, useDispatch } from 'react-redux';
-// import { DeleteAccount } from '../../store/sellerSlice'; // Assuming this exists
+import { deleteSellerAccount } from '../../store/SellerProfileSlice';
 
 const DeleteAccount = () => {
     const [checked, setChecked] = useState(false);
     const auth = useSelector((state) => state.auth);
-    const userId = auth?.userData?.userId || auth?.userData?._id;
+    const sellerId = auth?.userData?.sellerId || auth?.userData?._id;
     const dispatch = useDispatch();
 
     const handleDelete = async () => {
-        if (!userId) {
+        if (!sellerId) {
             alert('You must be logged in to delete your account.');
             return;
         }
         try {
-            await dispatch(DeleteAccount({ userId })).unwrap();
+            await dispatch(deleteSellerAccount({ sellerId })).unwrap();
             localStorage.removeItem('user');
             window.location.href = '/';
         } catch (error) {
@@ -43,72 +43,74 @@ const DeleteAccount = () => {
         "All your listed products will be removed from the platform.",
         "You will lose access to your sales history and revenue analytics.",
         "Pending payouts and transactions will be canceled.",
-        "To sell again, you’ll need to re-register and verify your business identity.",
+        "To sell again, you'll need to re-register and verify your business identity.",
         "Some financial data may be retained for legal and auditing purposes."
     ];
 
     return (
         <Paper
-            elevation={4}
+            elevation={3}
             sx={{
-                maxWidth: 700,
-                mx: 'auto',
-                borderRadius: 4,
+                borderRadius: 3,
+                boxShadow: '0 6px 24px rgba(0,0,0,0.08)',
+                backgroundColor: 'tints.tint3',
                 overflow: 'hidden',
-                boxShadow: '0 12px 24px rgba(0,0,0,0.1)'
+                position: 'relative'
             }}
         >
+            {/* Header */}
             <Box
                 sx={{
-                    bgcolor: 'error.main',
-                    color: 'white',
-                    py: 3,
-                    px: 4,
-                    textAlign: 'center'
+                    p: 4,
+                    textAlign: 'center',
+                    backgroundImage: 'linear-gradient(to right, #fdf7ed, #fefaf4)',
+                    borderBottom: '1px solid',
+                    borderColor: 'shades.light',
                 }}
             >
-                <Typography variant="h5" fontWeight="bold">
+                <Typography variant="h5" fontWeight="bold" sx={{ color: 'custom.highlight' }}>
                     Delete Seller Account
                 </Typography>
-                <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                <Typography variant="body2" color="text.secondary">
                     Permanently remove your business and data from ArtGlimpse
                 </Typography>
             </Box>
 
-            <Box sx={{ p: 4 }}>
+            {/* Body */}
+            <Box sx={{ p: { xs: 4, md: 6 } }}>
                 <Alert
                     severity="warning"
                     sx={{
-                        mb: 3,
-                        bgcolor: 'error.lighter',
-                        color: 'error.dark'
+                        mb: 4,
+                        backgroundColor: 'rgba(193, 121, 18, 0.1)',
+                        color: 'custom.accent',
+                        '& .MuiAlert-icon': { color: 'custom.highlight' }
                     }}
                 >
-                    <Typography variant="body2">
-                        This action is <strong>permanent</strong> and cannot be undone. Please make sure you've backed up your data.
+                    <Typography variant="body2" fontWeight="500">
+                        This action is permanent and cannot be undone. Please make sure you've backed up your data.
                     </Typography>
                 </Alert>
 
-                <Typography variant="body1" sx={{ mb: 2 }}>
-                    Deleting your seller account will have the following consequences:
+                <Typography variant="body1" sx={{ mb: 3, fontWeight: 500 }}>
+                    <strong>Are you sure?</strong> Deleting your seller account means:
                 </Typography>
 
-                <Stack spacing={2} sx={{ mb: 3 }}>
+                <Stack spacing={2} sx={{ mb: 4 }}>
                     {deleteConsequences.map((point, index) => (
-                        <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <Box
-                                sx={{
-                                    width: 24,
-                                    height: 24,
-                                    borderRadius: '50%',
-                                    bgcolor: 'error.lighter',
-                                    color: 'error.main',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontWeight: 'bold'
-                                }}
-                            >
+                        <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                            <Box sx={{
+                                width: 24,
+                                height: 24,
+                                borderRadius: '50%',
+                                bgcolor: 'rgba(193, 121, 18, 0.1)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                color: 'custom.highlight',
+                                fontSize: '14px',
+                                fontWeight: 'bold'
+                            }}>
                                 {index + 1}
                             </Box>
                             <Typography variant="body2">{point}</Typography>
@@ -118,7 +120,7 @@ const DeleteAccount = () => {
 
                 <Box
                     sx={{
-                        bgcolor: 'error.lighter',
+                        bgcolor: 'rgba(193, 121, 18, 0.05)',
                         p: 2,
                         borderRadius: 2,
                         mb: 3
@@ -155,11 +157,11 @@ const DeleteAccount = () => {
                         sx={{
                             borderRadius: 2,
                             fontWeight: '600',
-                            borderColor: 'error.main',
-                            color: 'error.main',
+                            borderColor: 'custom.highlight',
+                            color: 'custom.highlight',
                             '&:hover': {
-                                backgroundColor: 'rgba(211, 47, 47, 0.05)',
-                                borderColor: 'error.main'
+                                backgroundColor: 'rgba(193, 121, 18, 0.05)',
+                                borderColor: 'custom.highlight'
                             }
                         }}
                     >
@@ -168,16 +170,24 @@ const DeleteAccount = () => {
 
                     <Button
                         variant="contained"
-                        color="error"
                         onClick={handleDelete}
                         disabled={!checked}
                         startIcon={<WarningAmberIcon />}
                         sx={{
-                            borderRadius: 2,
                             fontWeight: '600',
+                            borderRadius: 2,
+                            py: 1.5,
+                            px: 3,
+                            order: { xs: 1, sm: 2 },
+                            backgroundColor: 'custom.highlight',
+                            color: 'white',
+                            '&:hover': {
+                                backgroundColor: 'custom.accent',
+                            },
                             '&:disabled': {
-                                backgroundColor: 'error.light',
-                                opacity: 0.6
+                                opacity: 0.5,
+                                backgroundColor: 'shades.medium',
+                                color: 'white'
                             }
                         }}
                     >

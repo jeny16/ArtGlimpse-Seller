@@ -1,47 +1,60 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import sellerService from '../action/sellerService';
 
-const BASE_URL = 'http://localhost:8081/api/seller';
-
-// GET seller profile
 export const fetchSellerProfile = createAsyncThunk(
   'sellerProfile/fetch',
-  async (userId, { rejectWithValue }) => {
+  async ({ sellerId }, thunkAPI) => {
     try {
-      const response = await axios.get(`${BASE_URL}/profile`, {
-        params: { userId }
-      });
-      return response.data;
+      const data = await sellerService.getProfile(sellerId);
+      return data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || 'Failed to fetch profile');
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || error?.message || 'Failed to fetch seller profile'
+      );
     }
   }
 );
 
-// UPDATE seller profile
 export const updateSellerProfile = createAsyncThunk(
   'sellerProfile/update',
-  async ({ userId, profileData }, { rejectWithValue }) => {
+  async ({ sellerId, profileData }, thunkAPI) => {
     try {
-      const response = await axios.put(`${BASE_URL}/profile`, profileData, {
-        params: { userId }
-      });
-      return response.data;
+      const data = await sellerService.updateProfile(sellerId, profileData);
+      return data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || 'Failed to update profile');
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || error?.message || 'Failed to update seller profile'
+      );
     }
   }
 );
 
-// Slice
+export const deleteSellerAccount = createAsyncThunk(
+  'sellerProfile/delete',
+  async ({ sellerId }, thunkAPI) => {
+    try {
+      const data = await sellerService.deleteSeller(sellerId);
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error?.response?.data?.message || error?.message || 'Failed to delete seller account'
+      );
+    }
+  }
+);
+
 const sellerProfileSlice = createSlice({
   name: 'sellerProfile',
   initialState: {
-    profile: null,
+    sellerProfile: null,
     status: 'idle',
-    error: null
+    error: null,
   },
-  reducers: {},
+  reducers: {
+    resetSellerProfileError: (state) => {
+      state.error = null;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchSellerProfile.pending, (state) => {
@@ -50,11 +63,11 @@ const sellerProfileSlice = createSlice({
       })
       .addCase(fetchSellerProfile.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.profile = action.payload;
+        state.sellerProfile = action.payload;
       })
       .addCase(fetchSellerProfile.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload || action.error.message;
+        state.error = action.payload;
       })
       .addCase(updateSellerProfile.pending, (state) => {
         state.status = 'loading';
@@ -62,13 +75,26 @@ const sellerProfileSlice = createSlice({
       })
       .addCase(updateSellerProfile.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.profile = action.payload;
+        state.sellerProfile = action.payload;
       })
       .addCase(updateSellerProfile.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload || action.error.message;
+        state.error = action.payload;
+      })
+      .addCase(deleteSellerAccount.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(deleteSellerAccount.fulfilled, (state) => {
+        state.status = 'succeeded';
+        state.sellerProfile = null;
+      })
+      .addCase(deleteSellerAccount.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload;
       });
   }
 });
 
+export const { resetSellerProfileError } = sellerProfileSlice.actions;
 export default sellerProfileSlice.reducer;

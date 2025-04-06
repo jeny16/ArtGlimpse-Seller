@@ -1,67 +1,96 @@
 import React, { useState } from 'react';
-import { 
-  Paper, 
-  Typography, 
-  Box, 
-  Button, 
-  Dialog, 
-  DialogTitle, 
-  DialogContent, 
-  DialogActions,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText
+import {
+  Box,
+  Typography,
+  Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Divider,
+  Button,
+  Container
 } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import GavelIcon from '@mui/icons-material/Gavel';
+import UpdateIcon from '@mui/icons-material/Update';
+import EmailIcon from '@mui/icons-material/Email';
 import SecurityIcon from '@mui/icons-material/Security';
 import DescriptionIcon from '@mui/icons-material/Description';
-import UpdateIcon from '@mui/icons-material/Update';
 
 const TermsAndConditions = () => {
-  const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState('panel1');
 
-  const termsHighlights = [
+  const handleChange = (panel) => (event, newExpanded) => {
+    setExpanded(newExpanded ? panel : false);
+  };
+
+  const accordionSections = [
     {
-      icon: <SecurityIcon sx={{ color: 'custom.highlight' }} />,
-      primary: "Account Security",
-      secondary: "Protect your account and personal information"
+      id: 'panel1',
+      title: '1. Seller Account, Password, and Security',
+      details: [
+        "You are responsible for maintaining the confidentiality of your seller account credentials and for all activities under your account. Always use a strong password and do not share your login details.",
+        "If you suspect any unauthorized access, please contact our support immediately."
+      ]
     },
     {
-      icon: <DescriptionIcon sx={{ color: 'custom.highlight' }} />,
-      primary: "Clear Guidelines",
-      secondary: "Understand platform usage rules"
+      id: 'panel2',
+      title: '2. Seller Services',
+      details: [
+        "ArtGlimpse offers sellers a platform to showcase and sell their artwork. Our platform is designed to connect artists with enthusiasts, ensuring a seamless selling experience.",
+        "We continuously update our selling tools and services, so please review our latest offerings periodically."
+      ]
     },
     {
-      icon: <UpdateIcon sx={{ color: 'custom.highlight' }} />,
-      primary: "Regular Updates",
-      secondary: "Terms may be modified periodically"
+      id: 'panel3',
+      title: '3. Platform for Transaction and Communication',
+      details: [
+        "Our platform facilitates secure transactions between buyers and sellers, as well as seamless communication. We employ advanced encryption to safeguard your financial and personal data during every transaction.",
+        "However, ArtGlimpse is not liable for communication issues or disputes between third-party users."
+      ]
+    },
+    {
+      id: 'panel4',
+      title: '4. Seller Conduct and Rules on the Platform',
+      details: [
+        "Sellers must abide by all applicable laws and refrain from any fraudulent, abusive, or harmful activities. This includes, but is not limited to, the prohibition of posting offensive or misleading content.",
+        "Violations of these rules may result in suspension or termination of your seller account."
+      ]
+    },
+    {
+      id: 'panel5',
+      title: '5. Artwork and Content Posted on Platform',
+      details: [
+        "Any artwork or content that you post on ArtGlimpse remains your responsibility. While we strive to maintain a safe and respectful environment, you agree that ArtGlimpse is not liable for any content posted by sellers.",
+        "Please ensure that your artwork and posts do not infringe on copyrights or violate any laws."
+      ]
+    },
+    {
+      id: 'panel6',
+      title: '6. Limitation of Liability and Termination',
+      details: [
+        "ArtGlimpse shall not be liable for any indirect, incidental, or consequential damages arising from your use of our services. Our liability is limited to the amount paid for the service that gave rise to any claim.",
+        "We reserve the right to terminate or suspend your seller account immediately, without notice, for any breach of these Terms."
+      ]
     }
   ];
 
-  const handleOpenTerms = () => {
-    setOpen(true);
-  };
-
-  const handleCloseTerms = () => {
-    setOpen(false);
-  };
-
   return (
-    <>
+    <Container>
       <Paper
         elevation={2}
         sx={{
           borderRadius: 3,
           overflow: 'hidden',
-          backgroundColor: 'tints.tint3',
-          backgroundImage: 'linear-gradient(to right, #fdf7ed, #fefaf4)'
+          backgroundColor: 'tints.tint3'
         }}
       >
+        {/* Header */}
         <Box
           sx={{
-            p: 3,
+            p: 4,
             textAlign: 'center',
+            backgroundImage: 'linear-gradient(to right, #fdf7ed, #fefaf4)',
             borderBottom: '1px solid',
             borderColor: 'shades.light'
           }}
@@ -69,126 +98,116 @@ const TermsAndConditions = () => {
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 1 }}>
             <GavelIcon sx={{ color: 'custom.highlight', fontSize: 32, mr: 1 }} />
             <Typography variant="h5" component="h1" fontWeight="bold" sx={{ color: 'custom.highlight' }}>
-              Terms & Conditions
+              Seller Terms of Use
             </Typography>
           </Box>
           <Typography variant="body2" color="text.secondary">
-            Review the legal terms governing your seller account
+            Last updated: March 1, 2025
           </Typography>
-        </Box>
-
-        <Box sx={{ p: 3 }}>
-          <List>
-            {termsHighlights.map((item, index) => (
-              <ListItem key={index} disableGutters>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText 
-                  primary={item.primary} 
-                  secondary={item.secondary}
-                  primaryTypographyProps={{ fontWeight: 'medium' }}
-                />
-              </ListItem>
-            ))}
-          </List>
-
-          <Box 
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              p: 2,
-              bgcolor: 'rgba(193, 121, 18, 0.05)',
-              borderRadius: 2,
-              mt: 2
-            }}
-          >
-            <UpdateIcon sx={{ color: 'custom.highlight', mr: 2 }} />
+          <Box sx={{ mt: 2 }}>
             <Typography variant="body2">
-              Last Updated: March 1, 2025
+              Please read these Terms carefully. By using ArtGlimpse as a seller, you agree to be bound by these Terms.
             </Typography>
           </Box>
+        </Box>
 
-          <Box mt={2} textAlign="center">
-            <Button 
-              variant="contained"
-              sx={{ 
-                textTransform: 'uppercase', 
-                fontWeight: 'bold', 
-                borderRadius: 2, 
-                color: 'white', 
-                bgcolor: 'custom.highlight', 
-                '&:hover': { bgcolor: 'custom.accent' },
-                px: 3
+        {/* Content */}
+        <Box sx={{ p: { xs: 3, md: 5 } }}>
+          {/* Introduction */}
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="body1" paragraph>
+              Welcome to ArtGlimpse. These Terms of Use govern your use of our platform as a seller. If you do not agree with these Terms, please refrain from using our platform.
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                p: 2,
+                bgcolor: 'rgba(193, 121, 18, 0.05)',
+                borderRadius: 2,
+                mb: 4,
+                mt: 3
               }}
-              onClick={handleOpenTerms}
             >
-              Read Full Terms
+              <UpdateIcon sx={{ color: 'custom.highlight', mr: 2 }} />
+              <Typography variant="body2">
+                These Terms were last updated on March 1, 2025. Continued use of our platform after changes constitutes your acceptance of the revised Terms.
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* Accordion Sections */}
+          {accordionSections.map((section) => (
+            <Accordion
+              key={section.id}
+              expanded={expanded === section.id}
+              onChange={handleChange(section.id)}
+              sx={{
+                mb: 2,
+                '&:before': { display: 'none' },
+                boxShadow: 'none',
+                border: '1px solid',
+                borderColor: 'shades.light',
+                borderRadius: '8px !important',
+                overflow: 'hidden'
+              }}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon sx={{ color: 'custom.highlight' }} />}
+                sx={{
+                  bgcolor: 'rgba(193, 121, 18, 0.05)',
+                  '&:hover': { bgcolor: 'rgba(193, 121, 18, 0.1)' }
+                }}
+              >
+                <Typography variant="subtitle1" fontWeight="600">
+                  {section.title}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {section.details.map((text, index) => (
+                  <Typography variant="body2" paragraph key={index}>
+                    {text}
+                  </Typography>
+                ))}
+              </AccordionDetails>
+            </Accordion>
+          ))}
+
+          <Divider sx={{ my: 4 }} />
+
+          {/* Contact Information */}
+          <Box sx={{ textAlign: 'center', mb: 2 }}>
+            <Typography variant="h6" fontWeight="bold" sx={{ color: 'custom.highlight', mb: 1 }}>
+              Contact Us
+            </Typography>
+            <Typography variant="body2">
+              For any questions regarding these Seller Terms of Use, please email us at:
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 1 }}>
+              <EmailIcon sx={{ color: 'custom.highlight', mr: 1 }} />
+              <Typography variant="body2" color="text.secondary">
+                support@artglimpse.com
+              </Typography>
+            </Box>
+            <Button
+              variant="contained"
+              sx={{
+                mt: 2,
+                textTransform: 'uppercase',
+                fontWeight: 'bold',
+                borderRadius: 2,
+                color: 'white',
+                bgcolor: 'custom.highlight',
+                '&:hover': { bgcolor: 'custom.accent' }
+              }}
+              onClick={() => window.open('mailto:support@artglimpse.com', '_blank')}
+            >
+              Get in Touch
             </Button>
           </Box>
         </Box>
       </Paper>
-
-      <Dialog
-        open={open}
-        onClose={handleCloseTerms}
-        maxWidth="md"
-        fullWidth
-      >
-        <DialogTitle>
-          <Box display="flex" alignItems="center">
-            <GavelIcon sx={{ mr: 2, color: 'custom.highlight' }} />
-            <Typography variant="h6" fontWeight="bold">
-              Complete Terms of Use
-            </Typography>
-          </Box>
-        </DialogTitle>
-        <DialogContent dividers>
-          <Typography variant="body2" paragraph>
-            Welcome to ArtGlimpse. These Terms of Use govern your use of our platform.
-          </Typography>
-          <Typography variant="subtitle1" fontWeight="bold" sx={{ mt: 2, mb: 1, color: 'custom.highlight' }}>
-            Key Highlights:
-          </Typography>
-          <List>
-            <ListItem>
-              <ListItemText 
-                primary="Account Security" 
-                secondary="You are responsible for maintaining the confidentiality of your account credentials."
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText 
-                primary="Platform Usage" 
-                secondary="Abide by all applicable laws and refrain from fraudulent or harmful activities."
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemText 
-                primary="Liability Limitation" 
-                secondary="Our liability is limited to the amount paid for the product that gave rise to any claim."
-              />
-            </ListItem>
-          </List>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseTerms} color="primary">
-            Close
-          </Button>
-          <Button 
-            variant="contained" 
-            onClick={() => window.open('mailto:support@artglimpse.com', '_blank')}
-            sx={{ 
-              textTransform: 'uppercase', 
-              fontWeight: 'bold', 
-              color: 'white', 
-              bgcolor: 'custom.highlight', 
-              '&:hover': { bgcolor: 'custom.accent' }
-            }}
-          >
-            Contact Support
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+    </Container>
   );
 };
 
