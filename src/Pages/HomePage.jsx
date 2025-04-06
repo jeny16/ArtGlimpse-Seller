@@ -9,62 +9,66 @@ import {
     Container,
     Paper,
     Stack,
-    useTheme,
     Avatar,
-    CardMedia,
-    Chip
+    Chip,
+    useTheme,
+    useMediaQuery
 } from '@mui/material';
 import {
-    PieChartOutlined,
+    Palette,
     CurrencyRupee,
-    LocalShippingOutlined,
-    SupportAgentOutlined,
-    ArrowForwardIos,
-    WhatsApp,
-    Mail,
-    Phone
+    LocalShipping,
+    HeadphonesOutlined,
+    ArrowForward,
+    Star,
+    PanTool,
+    AutoAwesome,
+    BarChart,
+    ShoppingBag
 } from '@mui/icons-material';
 
 const HomePage = () => {
     const theme = useTheme();
     const highlight = theme.palette.custom.highlight;
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 
     const styles = {
         hero: {
-            background: 'linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%)',
-            color: theme.palette.text.primary,
-            padding: theme.spacing(8),
-            borderRadius: theme.spacing(1),
+            background: 'linear-gradient(135deg, #fdf6e9 0%, #fdf9f1 100%)',
+            padding: theme.spacing(isMobile ? 4 : 8),
             position: 'relative',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            borderRadius: theme.spacing(2),
+            mt: theme.spacing(10)
         },
         heroContent: {
             position: 'relative',
-            zIndex: 2
+            zIndex: 2,
         },
         section: {
-            padding: theme.spacing(10, 0),
+            padding: theme.spacing(isMobile ? 6 : 12, 0),
         },
         whiteSection: {
             backgroundColor: '#ffffff',
-            padding: theme.spacing(10, 0),
+            padding: theme.spacing(isMobile ? 6 : 12, 0),
         },
         greySection: {
-            backgroundColor: '#f5f5f5',
-            padding: theme.spacing(10, 0),
+            backgroundColor: '#fdf6e9',
+            padding: theme.spacing(isMobile ? 6 : 12, 0),
         },
         card: {
             height: '100%',
             display: 'flex',
             flexDirection: 'column',
             borderRadius: theme.spacing(2),
-            boxShadow: '0 6px 12px rgba(0,0,0,0.08)',
-            transition: 'transform 0.3s, box-shadow 0.3s',
+            boxShadow: '0 6px 12px rgba(0,0,0,0.06)',
+            transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
             border: '1px solid #e0e0e0',
             overflow: 'hidden',
             '&:hover': {
-                transform: 'translateY(-8px)',
-                boxShadow: '0 12px 20px rgba(0,0,0,0.12)'
+                transform: isMobile ? 'none' : 'translateY(-8px)',
+                boxShadow: '0 12px 20px rgba(0,0,0,0.1)'
             }
         },
         statsCard: {
@@ -85,28 +89,34 @@ const HomePage = () => {
             backgroundColor: highlight,
             color: 'white',
             padding: theme.spacing(1.5, 6),
-            borderRadius: theme.spacing(1),
+            borderRadius: theme.spacing(6),
             fontWeight: 600,
             boxShadow: `0 4px 8px ${highlight}33`,
+            transition: 'all 0.3s ease-in-out',
+            fontFamily: "'Raleway', sans-serif",
             '&:hover': {
-                backgroundColor: highlight,
-                boxShadow: `0 6px 10px ${highlight}55`
+                backgroundColor: theme.palette.custom.accent,
+                boxShadow: `0 6px 10px ${highlight}55`,
+                transform: 'scale(1.05)'
             }
         },
         secondaryButton: {
             borderColor: highlight,
             color: highlight,
             padding: theme.spacing(1.5, 6),
-            borderRadius: theme.spacing(1),
+            borderRadius: theme.spacing(6),
             fontWeight: 600,
+            transition: 'all 0.3s ease-in-out',
+            fontFamily: "'Raleway', sans-serif",
             '&:hover': {
-                borderColor: highlight,
-                backgroundColor: `${highlight}10`
+                borderColor: theme.palette.custom.accent,
+                backgroundColor: `${highlight}10`,
+                transform: 'scale(1.05)'
             }
         },
         highlightChip: {
             backgroundColor: highlight,
-            color: theme.palette.getContrastText(highlight),
+            color: '#ffffff',
             fontWeight: 600,
             marginBottom: theme.spacing(2)
         },
@@ -118,38 +128,65 @@ const HomePage = () => {
     };
 
     return (
-        <Box sx={{ backgroundColor: '#f5f5f5', my: 16 }}>
+        <Box sx={{ backgroundColor: '#fdf6e9', mt: 16 }}>
             {/* Hero Section */}
             <Paper sx={styles.hero} elevation={0}>
                 <Container maxWidth="lg">
                     <Grid container spacing={4} alignItems="center">
                         <Grid item xs={12} md={6} sx={styles.heroContent}>
-                            <Chip label="ArtGlimpse Seller" sx={styles.highlightChip} />
-                            <Typography variant="h1" gutterBottom fontWeight="700" fontSize="2.8rem">
-                                Grow Your Art Business Online
+                            <Chip label="ArtGlimpse for Sellers" sx={styles.highlightChip} />
+                            <Typography
+                                variant="h1"
+                                gutterBottom
+                                fontWeight="700"
+                                fontSize={{ xs: "2rem", sm: "2.4rem", md: "2.8rem" }}
+                                fontFamily="'Raleway', serif"
+                            >
+                                Turn Your Art Into a Thriving Business
                             </Typography>
-                            <Typography variant="h5" paragraph sx={{ mb: 4, fontWeight: 400, opacity: 0.9 }}>
-                                Join thousands of artists selling globally on India's premier art marketplace.
+                            <Typography
+                                variant="h5"
+                                paragraph
+                                sx={{
+                                    mb: 4,
+                                    fontWeight: 400,
+                                    opacity: 0.9,
+                                    fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
+                                    fontFamily: "'Raleway', sans-serif"
+                                }}
+                            >
+                                Join thousands of artisans showcasing their resin creations across India on our premium handcrafted marketplace.
                             </Typography>
-                            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                                <Button variant="contained" size="large" sx={styles.button} endIcon={<ArrowForwardIos />}>
+                            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
+                                <Button
+                                    variant="contained"
+                                    size="large"
+                                    sx={styles.button}
+                                    endIcon={<ArrowForward />}
+                                >
                                     Register as a Seller
                                 </Button>
-                                <Button variant="outlined" size="large" sx={styles.secondaryButton}>
-                                    Watch Demo
+                                <Button
+                                    variant="outlined"
+                                    size="large"
+                                    sx={styles.secondaryButton}
+                                >
+                                    Seller Login
                                 </Button>
                             </Stack>
                         </Grid>
                         <Grid item xs={12} md={6} sx={{ position: 'relative' }}>
                             <Box
                                 component="img"
-                                src="/api/placeholder/550/400"
-                                alt="Artist selling artwork online"
+                                src="https://media.istockphoto.com/id/1346661870/photo/baskets-traditional-handicraft-products.jpg?s=612x612&w=0&k=20&c=CNV8ONrT8EoZFMPpdkHNOPqk2vTbLitB9n9FfmsLA88="
+                                // src="/api/placeholder/550/400"
+                                alt="Artisan crafting resin art"
                                 sx={{
-                                    width: '100%',
+                                    width: "100%",
+                                    height: "auto",
                                     borderRadius: theme.spacing(3),
-                                    boxShadow: '0 12px 24px rgba(0,0,0,0.2)',
-                                    transform: 'rotate(2deg)'
+                                    boxShadow: '0 12px 24px rgba(0,0,0,0.15)',
+                                    transform: { xs: 'none', md: 'rotate(2deg)' }
                                 }}
                             />
                         </Grid>
@@ -158,29 +195,65 @@ const HomePage = () => {
             </Paper>
 
             {/* Quick Stats */}
-            <Container maxWidth="lg" sx={{ mt: -6 }}>
+            <Container maxWidth="lg" sx={{ my: { xs: 2, md: 4 } }}>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={4}>
                         <Paper sx={styles.statsCard} elevation={0}>
                             <Box sx={styles.stat}>
-                                <Typography variant="h3" color={highlight} fontWeight="700">25K+</Typography>
-                                <Typography variant="subtitle1">Sellers Trust Us</Typography>
+                                <Typography
+                                    variant="h3"
+                                    color={highlight}
+                                    fontWeight="700"
+                                    fontFamily="'Raleway', serif"
+                                >
+                                    5000+
+                                </Typography>
+                                <Typography
+                                    variant="subtitle1"
+                                    fontFamily="'Raleway', sans-serif"
+                                >
+                                    Active Artisans
+                                </Typography>
                             </Box>
                         </Paper>
                     </Grid>
                     <Grid item xs={12} md={4}>
                         <Paper sx={styles.statsCard} elevation={0}>
                             <Box sx={styles.stat}>
-                                <Typography variant="h3" color={highlight} fontWeight="700">₹2.5M</Typography>
-                                <Typography variant="subtitle1">Monthly Sales Volume</Typography>
+                                <Typography
+                                    variant="h3"
+                                    color={highlight}
+                                    fontWeight="700"
+                                    fontFamily="'Raleway', serif"
+                                >
+                                    ₹2.5M
+                                </Typography>
+                                <Typography
+                                    variant="subtitle1"
+                                    fontFamily="'Raleway', sans-serif"
+                                >
+                                    Monthly Revenue
+                                </Typography>
                             </Box>
                         </Paper>
                     </Grid>
                     <Grid item xs={12} md={4}>
                         <Paper sx={styles.statsCard} elevation={0}>
                             <Box sx={styles.stat}>
-                                <Typography variant="h3" color={highlight} fontWeight="700">500K+</Typography>
-                                <Typography variant="subtitle1">Active Buyers</Typography>
+                                <Typography
+                                    variant="h3"
+                                    color={highlight}
+                                    fontWeight="700"
+                                    fontFamily="'Raleway', serif"
+                                >
+                                    500K+
+                                </Typography>
+                                <Typography
+                                    variant="subtitle1"
+                                    fontFamily="'Raleway', sans-serif"
+                                >
+                                    Monthly Visitors
+                                </Typography>
                             </Box>
                         </Paper>
                     </Grid>
@@ -192,11 +265,26 @@ const HomePage = () => {
                 <Container maxWidth="lg">
                     <Box textAlign="center" mb={8}>
                         <Chip label="Benefits" sx={styles.highlightChip} />
-                        <Typography variant="h2" fontWeight="700" gutterBottom>
-                            Why Artists Choose ArtGlimpse
+                        <Typography
+                            variant="h2"
+                            fontWeight="700"
+                            gutterBottom
+                            fontSize={{ xs: "1.8rem", sm: "2.2rem", md: "2.5rem" }}
+                            fontFamily="'Raleway', serif"
+                            color="#814d0b"
+                        >
+                            Why Artisans Choose ArtGlimpse
                         </Typography>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ maxWidth: '700px', mx: 'auto' }}>
-                            We provide the tools and support you need to grow your art business online.
+                        <Typography
+                            variant="subtitle1"
+                            color="text.secondary"
+                            sx={{
+                                maxWidth: '700px',
+                                mx: 'auto',
+                                fontFamily: "'Raleway', sans-serif"
+                            }}
+                        >
+                            We provide everything you need to showcase your handcrafted resin art and grow your business.
                         </Typography>
                     </Box>
 
@@ -204,14 +292,14 @@ const HomePage = () => {
                         <Grid item xs={12} sm={6} lg={3}>
                             <Card sx={styles.card} elevation={0}>
                                 <CardContent sx={{ p: 4, flexGrow: 1 }}>
-                                    <Box sx={{ backgroundColor: theme.palette.grey[200], borderRadius: '50%', p: 2, mb: 2, display: "inline-flex" }}>
-                                        <PieChartOutlined sx={{ color: highlight, fontSize: '2rem' }} />
+                                    <Box sx={{ backgroundColor: theme.palette.grey[100], borderRadius: '50%', p: 2, mb: 2, display: "inline-flex" }}>
+                                        <BarChart sx={{ color: highlight, fontSize: '2rem' }} />
                                     </Box>
-                                    <Typography variant="h5" gutterBottom fontWeight="600">
-                                        0% Commission
+                                    <Typography variant="h5" gutterBottom fontWeight="600" fontFamily="'Raleway', serif">
+                                        Low Commission
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Enjoy zero commission for the first 30 days. Competitive rates apply thereafter.
+                                    <Typography variant="body2" color="text.secondary" fontFamily="'Raleway', sans-serif">
+                                        Just 10% platform fee with zero commission for your first month after joining.
                                     </Typography>
                                 </CardContent>
                             </Card>
@@ -220,30 +308,14 @@ const HomePage = () => {
                         <Grid item xs={12} sm={6} lg={3}>
                             <Card sx={styles.card} elevation={0}>
                                 <CardContent sx={{ p: 4, flexGrow: 1 }}>
-                                    <Box sx={{ backgroundColor: theme.palette.grey[200], borderRadius: '50%', p: 2, mb: 2, display: "inline-flex" }}>
+                                    <Box sx={{ backgroundColor: theme.palette.grey[100], borderRadius: '50%', p: 2, mb: 2, display: "inline-flex" }}>
                                         <CurrencyRupee sx={{ color: highlight, fontSize: '2rem' }} />
                                     </Box>
-                                    <Typography variant="h5" gutterBottom fontWeight="600">
-                                        7-Day Payments
+                                    <Typography variant="h5" gutterBottom fontWeight="600" fontFamily="'Raleway', serif">
+                                        Weekly Payments
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Get faster payouts with our efficient payment cycle.
-                                    </Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-
-                        <Grid item xs={12} sm={6} lg={3}>
-                            <Card sx={styles.card} elevation={0}>
-                                <CardContent sx={{ p: 4, flexGrow: 1 }}>
-                                    <Box sx={{ backgroundColor: theme.palette.grey[200], borderRadius: '50%', p: 2, mb: 2, display: "inline-flex" }}>
-                                        <LocalShippingOutlined sx={{ color: highlight, fontSize: '2rem' }} />
-                                    </Box>
-                                    <Typography variant="h5" gutterBottom fontWeight="600">
-                                        Easy Shipping
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Seamless logistics with door-to-door pickup.
+                                    <Typography variant="body2" color="text.secondary" fontFamily="'Raleway', sans-serif">
+                                        Get paid every 7 days directly to your bank account with no minimum threshold.
                                     </Typography>
                                 </CardContent>
                             </Card>
@@ -252,14 +324,30 @@ const HomePage = () => {
                         <Grid item xs={12} sm={6} lg={3}>
                             <Card sx={styles.card} elevation={0}>
                                 <CardContent sx={{ p: 4, flexGrow: 1 }}>
-                                    <Box sx={{ backgroundColor: theme.palette.grey[200], borderRadius: '50%', p: 2, mb: 2, display: "inline-flex" }}>
-                                        <SupportAgentOutlined sx={{ color: highlight, fontSize: '2rem' }} />
+                                    <Box sx={{ backgroundColor: theme.palette.grey[100], borderRadius: '50%', p: 2, mb: 2, display: "inline-flex" }}>
+                                        <LocalShipping sx={{ color: highlight, fontSize: '2rem' }} />
                                     </Box>
-                                    <Typography variant="h5" gutterBottom fontWeight="600">
-                                        24x7 Support
+                                    <Typography variant="h5" gutterBottom fontWeight="600" fontFamily="'Raleway', serif">
+                                        Shipping Support
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary">
-                                        Dedicated account managers to help your business grow.
+                                    <Typography variant="body2" color="text.secondary" fontFamily="'Raleway', sans-serif">
+                                        Free pickup from your doorstep with discounted shipping rates nationwide.
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+
+                        <Grid item xs={12} sm={6} lg={3}>
+                            <Card sx={styles.card} elevation={0}>
+                                <CardContent sx={{ p: 4, flexGrow: 1 }}>
+                                    <Box sx={{ backgroundColor: theme.palette.grey[100], borderRadius: '50%', p: 2, mb: 2, display: "inline-flex" }}>
+                                        <HeadphonesOutlined sx={{ color: highlight, fontSize: '2rem' }} />
+                                    </Box>
+                                    <Typography variant="h5" gutterBottom fontWeight="600" fontFamily="'Raleway', serif">
+                                        Dedicated Support
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary" fontFamily="'Raleway', sans-serif">
+                                        Personal account manager and 24/7 seller support in multiple languages.
                                     </Typography>
                                 </CardContent>
                             </Card>
@@ -272,36 +360,60 @@ const HomePage = () => {
             <Box sx={styles.greySection}>
                 <Container maxWidth="lg">
                     <Box textAlign="center" mb={8}>
-                        <Chip label="Quick Start" sx={styles.highlightChip} />
-                        <Typography variant="h2" fontWeight="700" gutterBottom>
-                            Start Selling in 4 Easy Steps
+                        <Chip label="Getting Started" sx={styles.highlightChip} />
+                        <Typography
+                            variant="h2"
+                            fontWeight="700"
+                            gutterBottom
+                            fontSize={{ xs: "1.8rem", sm: "2.2rem", md: "2.5rem" }}
+                            fontFamily="'Raleway', serif"
+                            color="#814d0b"
+                        >
+                            Start Selling in 4 Simple Steps
                         </Typography>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ maxWidth: '700px', mx: 'auto' }}>
-                            Our simple process takes you from registration to your first sale quickly.
+                        <Typography
+                            variant="subtitle1"
+                            color="text.secondary"
+                            sx={{
+                                maxWidth: '700px',
+                                mx: 'auto',
+                                fontFamily: "'Raleway', sans-serif"
+                            }}
+                        >
+                            Begin your selling journey and reach customers across India with our easy setup process.
                         </Typography>
                     </Box>
 
                     <Grid container spacing={4}>
                         {[
-                            { step: '1', title: 'Register & Verify', desc: 'Complete the registration and verify your account.' },
-                            { step: '2', title: 'List Your Art', desc: 'Upload your artwork with detailed descriptions.' },
-                            { step: '3', title: 'Receive Orders', desc: 'Get notified instantly when customers purchase your artwork' },
-                            { step: '4', title: 'Get Paid', desc: 'Receive payments directly in your bank account every 7 days.' }
+                            { step: '1', title: 'Create Your Account', desc: 'Register with basic details and verify your identity and business documents.' },
+                            { step: '2', title: 'Set Up Your Shop', desc: 'Customize your storefront with your brand story, logo, and showcase your craftsmanship.' },
+                            { step: '3', title: 'List Your Products', desc: 'Upload high-quality images and detailed descriptions of your resin creations.' },
+                            { step: '4', title: 'Start Selling', desc: 'Receive orders, ship products, and grow your handcrafted business nationwide.' }
                         ].map(({ step, title, desc }) => (
                             <Grid key={step} item xs={12} md={6} lg={3}>
                                 <Card sx={styles.stepCard} elevation={0}>
                                     <Box display="flex" alignItems="center" mb={2}>
-                                        <Avatar sx={{ bgcolor: theme.palette.grey[400], color: 'white', width: 40, height: 40, fontWeight: 'bold' }}>
+                                        <Avatar
+                                            sx={{
+                                                bgcolor: highlight,
+                                                color: 'white',
+                                                width: 40,
+                                                height: 40,
+                                                fontWeight: 'bold',
+                                                fontFamily: "'Raleway', sans-serif"
+                                            }}
+                                        >
                                             {step}
                                         </Avatar>
-                                        <Typography variant="body2" color="text.secondary" ml={2}>
+                                        <Typography variant="body2" color="text.secondary" ml={2} fontFamily="'Raleway', sans-serif">
                                             Step {step}
                                         </Typography>
                                     </Box>
-                                    <Typography variant="h5" gutterBottom fontWeight="600">
+                                    <Typography variant="h5" gutterBottom fontWeight="600" fontFamily="'Raleway', serif">
                                         {title}
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary" mb={2}>
+                                    <Typography variant="body2" color="text.secondary" mb={2} fontFamily="'Raleway', sans-serif">
                                         {desc}
                                     </Typography>
                                     <Box sx={{ height: '6px', width: '40%', backgroundColor: highlight, borderRadius: '3px', mt: 'auto' }} />
@@ -311,49 +423,186 @@ const HomePage = () => {
                     </Grid>
 
                     <Box mt={8} textAlign="center">
-                        <Button variant="contained" size="large" sx={styles.button} endIcon={<ArrowForwardIos />}>
-                            Register Now
+                        <Button variant="contained" size="large" sx={styles.button} endIcon={<ArrowForward />}>
+                            Join ArtGlimpse Today
                         </Button>
                     </Box>
                 </Container>
             </Box>
 
-            {/* Growth Stories */}
+            {/* Success Stories */}
             <Box sx={styles.whiteSection}>
                 <Container maxWidth="lg">
                     <Box textAlign="center" mb={8}>
                         <Chip label="Success Stories" sx={styles.highlightChip} />
-                        <Typography variant="h2" fontWeight="700" gutterBottom>
-                            Artists Growing with ArtGlimpse
+                        <Typography
+                            variant="h2"
+                            fontWeight="700"
+                            gutterBottom
+                            fontSize={{ xs: "1.8rem", sm: "2.2rem", md: "2.5rem" }}
+                            fontFamily="'Raleway', serif"
+                            color="#814d0b"
+                        >
+                            Artisans Thriving with ArtGlimpse
                         </Typography>
-                        <Typography variant="subtitle1" color="text.secondary" sx={{ maxWidth: '700px', mx: 'auto' }}>
-                            Real stories from artists who transformed their passion into profitable businesses.
+                        <Typography
+                            variant="subtitle1"
+                            color="text.secondary"
+                            sx={{
+                                maxWidth: '700px',
+                                mx: 'auto',
+                                fontFamily: "'Raleway', sans-serif"
+                            }}
+                        >
+                            Real stories from artisans who transformed their passion into successful businesses.
                         </Typography>
                     </Box>
 
                     <Grid container spacing={4}>
                         {[
-                            { title: "Aisha's Studio", desc: 'From local sales to global reach, ArtGlimpse transformed my business.', stat: '200% growth in 6 months' },
-                            { title: "Raj's Sculptures", desc: 'The nationwide reach helped me find collectors across India.', stat: '75+ cities reached in first year' },
-                            { title: "Maya's Paintings", desc: 'Seller tools helped me refine my portfolio and boost my sales.', stat: '₹3.5 lakh monthly sales' }
+                            {
+                                title: "Priya's Resin Workshop",
+                                desc: 'ArtGlimpse helped me showcase my designs to customers across India. Now I have a team of 5 artisans!',
+                                stat: '300% growth in 8 months',
+                                rating: 5
+                            },
+                            {
+                                title: "Raman's Art Gallery",
+                                desc: 'From selling locally to shipping nationwide, ArtGlimpse transformed my small workshop into a brand.',
+                                stat: '₹3.2 lakh monthly revenue',
+                                rating: 5
+                            },
+                            {
+                                title: "Meera's Crafts",
+                                desc: 'The support and tools provided helped me scale my business while focusing on my artistic vision.',
+                                stat: 'Orders from 95+ cities',
+                                rating: 5
+                            }
                         ].map((story, idx) => (
                             <Grid key={idx} item xs={12} md={4}>
                                 <Card sx={styles.card} elevation={0}>
-                                    <CardMedia
-                                        component="img"
-                                        height="200"
-                                        image="/api/placeholder/400/200"
-                                        alt="Artist success story"
-                                    />
+                                    <Box sx={{
+                                        height: 180,
+                                        backgroundColor: '#fdf6e9',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center'
+                                    }}>
+                                        <Box
+                                            component="img"
+                                            src="https://img.freepik.com/premium-photo/man-stands-with-crossed-hands-handicraft-items-casual-woman-s-using-tablet-craft-gallery_8595-20172.jpg"
+                                            // src="/api/placeholder/400/180"
+                                            alt="Artist success story"
+                                            sx={{
+                                                width: "100%",
+                                                height: "100%",
+                                                objectFit: "cover"
+                                            }}
+                                        />
+                                    </Box>
                                     <CardContent sx={{ p: 4 }}>
-                                        <Typography variant="h5" gutterBottom fontWeight="600">
-                                            {story.title}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" paragraph>
+                                        <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
+                                            <Typography variant="h5" fontWeight="600" fontFamily="'Raleway', serif">
+                                                {story.title}
+                                            </Typography>
+                                            <Box display="flex">
+                                                {[...Array(story.rating)].map((_, i) => (
+                                                    <Star key={i} sx={{ color: highlight, fontSize: '1rem' }} />
+                                                ))}
+                                            </Box>
+                                        </Box>
+                                        <Typography variant="body2" color="text.secondary" paragraph fontFamily="'Raleway', sans-serif">
                                             "{story.desc}"
                                         </Typography>
-                                        <Typography variant="body2" fontWeight="600" color={highlight}>
+                                        <Typography variant="body2" fontWeight="600" color={highlight} fontFamily="'Raleway', sans-serif">
                                             {story.stat}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </Container>
+            </Box>
+
+            {/* Seller Tools & Features */}
+            <Box sx={styles.greySection}>
+                <Container maxWidth="lg">
+                    <Box textAlign="center" mb={8}>
+                        <Chip label="Seller Tools" sx={styles.highlightChip} />
+                        <Typography
+                            variant="h2"
+                            fontWeight="700"
+                            gutterBottom
+                            fontSize={{ xs: "1.8rem", sm: "2.2rem", md: "2.5rem" }}
+                            fontFamily="'Raleway', serif"
+                            color="#814d0b"
+                        >
+                            Tools to Grow Your Crafting Business
+                        </Typography>
+                        <Typography
+                            variant="subtitle1"
+                            color="text.secondary"
+                            sx={{
+                                maxWidth: '700px',
+                                mx: 'auto',
+                                fontFamily: "'Raleway', sans-serif"
+                            }}
+                        >
+                            Everything you need to manage and scale your handcrafted business.
+                        </Typography>
+                    </Box>
+
+                    <Grid container spacing={4}>
+                        {[
+                            {
+                                icon: <ShoppingBag sx={{ color: highlight, fontSize: '2rem' }} />,
+                                title: "Sales Dashboard",
+                                desc: 'Track orders, monitor sales performance and analyze customer behavior with intuitive analytics.'
+                            },
+                            {
+                                icon: <Palette sx={{ color: highlight, fontSize: '2rem' }} />,
+                                title: "Shop Customization",
+                                desc: 'Create a branded storefront that showcases your unique craftsmanship and style.'
+                            },
+                            {
+                                icon: <AutoAwesome sx={{ color: highlight, fontSize: '2rem' }} />,
+                                title: "Promotion Tools",
+                                desc: 'Run special offers, create discount coupons and boost visibility for your products.'
+                            },
+                            {
+                                icon: <LocalShipping sx={{ color: highlight, fontSize: '2rem' }} />,
+                                title: "Logistics Support",
+                                desc: 'Manage shipping with doorstep pickup and real-time tracking for all your orders.'
+                            },
+                            {
+                                icon: <PanTool sx={{ color: highlight, fontSize: '2rem' }} />,
+                                title: "Artisan Community",
+                                desc: 'Connect with fellow craftspeople for support, inspiration and collaboration.'
+                            },
+                            {
+                                icon: <BarChart sx={{ color: highlight, fontSize: '2rem' }} />,
+                                title: "Growth Insights",
+                                desc: 'Get personalized recommendations to improve your store performance and visibility.'
+                            }
+                        ].map((feature, idx) => (
+                            <Grid key={idx} item xs={12} sm={6} md={4}>
+                                <Card sx={styles.card} elevation={0}>
+                                    <CardContent sx={{ p: 4, flexGrow: 1 }}>
+                                        <Box sx={{
+                                            backgroundColor: theme.palette.grey[100],
+                                            borderRadius: '50%',
+                                            p: 2,
+                                            mb: 2,
+                                            display: "inline-flex"
+                                        }}>
+                                            {feature.icon}
+                                        </Box>
+                                        <Typography variant="h5" gutterBottom fontWeight="600" fontFamily="'Raleway', serif">
+                                            {feature.title}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" fontFamily="'Raleway', sans-serif">
+                                            {feature.desc}
                                         </Typography>
                                     </CardContent>
                                 </Card>
@@ -365,100 +614,42 @@ const HomePage = () => {
 
             {/* CTA Section */}
             <Box sx={{
-                background: 'linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%)',
+                background: 'linear-gradient(135deg, #fdf6e9 0%, #fdf9f1 100%)',
                 padding: theme.spacing(10, 0),
                 color: theme.palette.text.primary,
             }}>
                 <Container maxWidth="md">
                     <Box textAlign="center">
-                        <Typography variant="h2" fontWeight="700" gutterBottom>
-                            Ready to Transform Your Art Business?
+                        <Typography
+                            variant="h2"
+                            fontWeight="700"
+                            gutterBottom
+                            fontSize={{ xs: "1.8rem", sm: "2.2rem", md: "2.5rem" }}
+                            fontFamily="'Raleway', serif"
+                            color="#814d0b"
+                        >
+                            Ready to Share Your Craft with India?
                         </Typography>
-                        <Typography variant="subtitle1" paragraph sx={{ opacity: 0.9, mb: 6 }}>
-                            Join thousands of artists reaching new customers and growing their sales.
+                        <Typography
+                            variant="subtitle1"
+                            paragraph
+                            sx={{
+                                opacity: 0.9,
+                                mb: 6,
+                                fontFamily: "'Raleway', sans-serif"
+                            }}
+                        >
+                            Join thousands of artisans turning their passion for resin art into a thriving business.
                         </Typography>
                         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} justifyContent="center">
-                            <Button variant="contained" size="large" sx={styles.button}>
-                                Register as a Seller
+                            <Button variant="contained" size="large" sx={styles.button} endIcon={<ArrowForward />}>
+                                Begin Your Seller Journey
                             </Button>
                             <Button variant="outlined" size="large" sx={styles.secondaryButton}>
-                                Contact Sales Team
+                                Schedule a Demo
                             </Button>
                         </Stack>
                     </Box>
-                </Container>
-            </Box>
-
-            {/* Support Section */}
-            <Box sx={styles.greySection}>
-                <Container maxWidth="lg">
-                    <Grid container spacing={4} alignItems="center">
-                        <Grid item xs={12} md={6}>
-                            <Chip label="Seller Support" sx={styles.highlightChip} />
-                            <Typography variant="h2" fontWeight="700" gutterBottom>
-                                We're Here to Help You Succeed
-                            </Typography>
-                            <Typography variant="body1" paragraph color="text.secondary">
-                                Our support team is available 24/7 to assist you with any queries.
-                            </Typography>
-                            <Box mt={4}>
-                                <Grid container spacing={3}>
-                                    {[
-                                        { label: 'WhatsApp Support', icon: <WhatsApp /> },
-                                        { label: 'Call Seller Support', icon: <Phone /> },
-                                        { label: 'Email Us', icon: <Mail /> }
-                                    ].map((btn, idx) => (
-                                        <Grid key={idx} item xs={12} sm={6}>
-                                            <Button
-                                                fullWidth
-                                                variant="outlined"
-                                                startIcon={btn.icon}
-                                                sx={{
-                                                    justifyContent: 'flex-start',
-                                                    p: 2,
-                                                    borderColor: '#e0e0e0',
-                                                    color: theme.palette.text.primary,
-                                                    '&:hover': {
-                                                        borderColor: highlight,
-                                                        backgroundColor: `${highlight}10`
-                                                    }
-                                                }}
-                                            >
-                                                {btn.label}
-                                            </Button>
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Box
-                                component="img"
-                                src="/api/placeholder/550/400"
-                                alt="Seller support"
-                                sx={{
-                                    width: '100%',
-                                    borderRadius: theme.spacing(3),
-                                    boxShadow: '0 8px 16px rgba(0,0,0,0.1)'
-                                }}
-                            />
-                        </Grid>
-                    </Grid>
-                </Container>
-            </Box>
-
-            {/* FAQ Teaser */}
-            <Box sx={{ backgroundColor: '#ffffff', py: 8 }}>
-                <Container maxWidth="md" sx={{ textAlign: 'center' }}>
-                    <Typography variant="h3" fontWeight="700" gutterBottom>
-                        Have Questions?
-                    </Typography>
-                    <Typography variant="body1" paragraph color="text.secondary" sx={{ mb: 4 }}>
-                        Check our comprehensive seller FAQ or reach out to our support team.
-                    </Typography>
-                    <Button variant="contained" sx={styles.secondaryButton}>
-                        View Seller FAQ
-                    </Button>
                 </Container>
             </Box>
         </Box>
