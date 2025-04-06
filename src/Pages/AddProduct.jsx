@@ -516,7 +516,6 @@ const AddProduct = () => {
     form.append(`image_${index}`, img.file);
   });
     
-
     const storedUser = localStorage.getItem('user');
     let sellerId = '';
     if (storedUser) {
@@ -556,7 +555,6 @@ const AddProduct = () => {
         <Typography variant="h4" sx={{ fontWeight: '600', mb: 4, pt: 3 }}>
           Add New Product
         </Typography>
-        
         {error && (
           <Typography color="error" sx={{ mb: 2 }}>
             {error}
@@ -573,42 +571,42 @@ const AddProduct = () => {
           <Grid item xs={12} md={8}>
             <Card sx={{ p: 3, mb: 3, borderRadius: 2 }}>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 500, display: 'flex', alignItems: 'center' }}>
-                <Package2 size={20} style={{ marginRight: 8 }} /> 
+                <Package2 size={20} style={{ marginRight: 8 }} />
                 Product Details
               </Typography>
-              
+
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <TextField 
-                    fullWidth 
-                    label="Product Name" 
-                    name="name" 
-                    value={productData.name} 
-                    onChange={handleInputChange} 
-                    required 
+                  <TextField
+                    fullWidth
+                    label="Product Name"
+                    name="name"
+                    value={productData.name}
+                    onChange={handleInputChange}
+                    required
                     variant="outlined"
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField 
-                    fullWidth 
-                    label="Description" 
-                    name="description" 
-                    value={productData.description} 
-                    onChange={handleInputChange} 
-                    multiline 
-                    rows={4} 
-                    required 
+                  <TextField
+                    fullWidth
+                    label="Description"
+                    name="description"
+                    value={productData.description}
+                    onChange={handleInputChange}
+                    multiline
+                    rows={4}
+                    required
                     variant="outlined"
                   />
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth variant="outlined">
                     <InputLabel>Category</InputLabel>
-                    <Select 
-                      name="category" 
-                      value={productData.category} 
-                      onChange={handleInputChange} 
+                    <Select
+                      name="category"
+                      value={productData.category}
+                      onChange={handleInputChange}
                       required
                       label="Category"
                     >
@@ -619,12 +617,12 @@ const AddProduct = () => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField 
-                    fullWidth 
-                    label="Materials" 
-                    name="materials_Made" 
-                    value={productData.materials_Made} 
-                    onChange={handleInputChange} 
+                  <TextField
+                    fullWidth
+                    label="Materials"
+                    name="materials_Made"
+                    value={productData.materials_Made}
+                    onChange={handleInputChange}
                   />
                 </Grid>
               </Grid>
@@ -632,31 +630,31 @@ const AddProduct = () => {
 
             <Card sx={{ p: 3, mb: 3, borderRadius: 2 }}>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 500 }}>Pricing & Inventory</Typography>
-              
+
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
-                  <TextField 
-                    fullWidth 
-                    label="Price" 
-                    name="price" 
-                    type="number" 
-                    value={productData.price} 
-                    onChange={handleInputChange} 
-                    required 
-                    InputProps={{ 
-                      startAdornment: <InputAdornment position="start">₹</InputAdornment> 
-                    }} 
+                  <TextField
+                    fullWidth
+                    label="Price"
+                    name="price"
+                    type="number"
+                    value={productData.price}
+                    onChange={handleInputChange}
+                    required
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">₹</InputAdornment>
+                    }}
                   />
                 </Grid>
                 <Grid item xs={12} md={6}>
-                  <TextField 
-                    fullWidth 
-                    label="Stock" 
-                    name="stock" 
-                    type="number" 
-                    value={productData.stock} 
-                    onChange={handleInputChange} 
-                    required 
+                  <TextField
+                    fullWidth
+                    label="Stock"
+                    name="stock"
+                    type="number"
+                    value={productData.stock}
+                    onChange={handleInputChange}
+                    required
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -664,17 +662,17 @@ const AddProduct = () => {
                     control={<Checkbox checked={productData.discount} onChange={handleInputChange} name="discount" color="primary" />}
                     label="Enable Discount"
                   />
-                  
+
                   {productData.discount && (
                     <Box sx={{ ml: 3, mt: 2 }}>
-                      <TextField 
-                        label="Discount Percentage" 
-                        name="percentage_Discount" 
-                        type="number" 
-                        value={productData.percentage_Discount} 
-                        onChange={handleInputChange} 
-                        InputProps={{ 
-                          endAdornment: <InputAdornment position="end">%</InputAdornment> 
+                      <TextField
+                        label="Discount Percentage"
+                        name="percentage_Discount"
+                        type="number"
+                        value={productData.percentage_Discount}
+                        onChange={handleInputChange}
+                        InputProps={{
+                          endAdornment: <InputAdornment position="end">%</InputAdornment>
                         }}
                         size="small"
                       />
@@ -689,14 +687,14 @@ const AddProduct = () => {
           <Grid item xs={12} md={4}>
             <Card sx={{ p: 3, mb: 3, borderRadius: 2 }}>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 500 }}>Product Images</Typography>
-              
-              <input 
-                accept="image/*" 
-                style={{ display: 'none' }} 
-                id="upload-images" 
-                multiple 
-                type="file" 
-                onChange={handleImageUpload} 
+
+              <input
+                accept="image/*"
+                style={{ display: 'none' }}
+                id="upload-images"
+                multiple
+                type="file"
+                onChange={handleImageUpload}
               />
               <label htmlFor="upload-images">
                 <Button 
@@ -704,9 +702,9 @@ const AddProduct = () => {
                   component="span" 
                   startIcon={<ImagePlus />} 
                   fullWidth
-                  sx={{ 
-                    py: 1.5, 
-                    borderStyle: 'dashed', 
+                  sx={{
+                    py: 1.5,
+                    borderStyle: 'dashed',
                     borderWidth: 1,
                     backgroundColor: "#c17912"
                   }}
@@ -714,32 +712,32 @@ const AddProduct = () => {
                   Upload Images
                 </Button>
               </label>
-              
+
               <Box sx={{ mt: 3 }}>
                 <Grid container spacing={2}>
                   {images.map((img, index) => (
                     <Grid item xs={6} key={index}>
-                      <Box sx={{ 
-                        position: 'relative', 
+                      <Box sx={{
+                        position: 'relative',
                         borderRadius: 1,
                         overflow: 'hidden',
                         boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                       }}>
-                        <img 
-                          src={img.preview} 
-                          alt={`upload-${index}`} 
-                          style={{ 
-                            width: '100%', 
-                            height: 120, 
-                            objectFit: 'cover' 
-                          }} 
+                        <img
+                          src={img.preview}
+                          alt={`upload-${index}`}
+                          style={{
+                            width: '100%',
+                            height: 120,
+                            objectFit: 'cover'
+                          }}
                         />
-                        <IconButton 
-                          size="small" 
-                          sx={{ 
-                            position: 'absolute', 
-                            top: 4, 
-                            right: 4, 
+                        <IconButton
+                          size="small"
+                          sx={{
+                            position: 'absolute',
+                            top: 4,
+                            right: 4,
                             backgroundColor: 'rgba(255,255,255,0.8)',
                             '&:hover': {
                               backgroundColor: 'rgba(255,255,255,0.9)'
@@ -758,12 +756,12 @@ const AddProduct = () => {
 
             <Card sx={{ p: 3, borderRadius: 2 }}>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 500 }}>Product Tags</Typography>
-              
+
               <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-                <TextField 
-                  placeholder="Add tag" 
-                  value={tagInput} 
-                  onChange={(e) => setTagInput(e.target.value)} 
+                <TextField
+                  placeholder="Add tag"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
                   sx={{ flex: 1 }}
                   size="small"
                   InputProps={{
@@ -776,6 +774,7 @@ const AddProduct = () => {
                     }
                   }}
                 />
+
                 <Button 
                   variant="contained"
                   sx={{
@@ -786,13 +785,13 @@ const AddProduct = () => {
                   Add
                 </Button>
               </Stack>
-              
+
               <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                 {productData.tags.map((tag, index) => (
-                  <Chip 
-                    key={index} 
-                    label={tag} 
-                    onDelete={() => removeTag(tag)} 
+                  <Chip
+                    key={index}
+                    label={tag}
+                    onDelete={() => removeTag(tag)}
                     sx={{ mb: 1 }}
                   />
                 ))}

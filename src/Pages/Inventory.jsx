@@ -1,349 +1,53 @@
-// // import React, { useState } from 'react';
-// // import { 
-// //   Box, 
-// //   Typography, 
-// //   Grid, 
-// //   Card, 
-// //   CardContent, 
-// //   Table, 
-// //   TableBody, 
-// //   TableCell, 
-// //   TableContainer, 
-// //   TableHead, 
-// //   TableRow, 
-// //   Paper, 
-// //   Button, 
-// //   IconButton, 
-// //   TextField, 
-// //   Dialog, 
-// //   DialogTitle, 
-// //   DialogContent, 
-// //   DialogActions,
-// //   Chip,
-// //   Stack,
-// //   MenuItem,
-// //   Select,
-// //   FormControl,
-// //   InputLabel
-// // } from '@mui/material';
-// // import { 
-// //   Edit as EditIcon, 
-// //   Delete as DeleteIcon, 
-// //   Add as AddIcon, 
-// //   Visibility as VisibilityIcon 
-// // } from '@mui/icons-material';
-
-// // const Inventory = () => {
-// //   const [products, setProducts] = useState([
-// //     {
-// //       id: 1,
-// //       name: 'Elegant Silver Earrings',
-// //       category: 'Jewelry & Accessories',
-// //       stock: 45,
-// //       price: 1299,
-// //       status: 'In Stock'
-// //     },
-// //     {
-// //       id: 2,
-// //       name: 'Handcrafted Beaded Necklace',
-// //       category: 'Jewelry & Accessories',
-// //       stock: 12,
-// //       price: 2499,
-// //       status: 'Low Stock'
-// //     },
-// //     {
-// //       id: 3,
-// //       name: 'Traditional Kundan Bracelet',
-// //       category: 'Jewelry & Accessories',
-// //       stock: 0,
-// //       price: 1799,
-// //       status: 'Out of Stock'
-// //     }
-// //   ]);
-
-// //   const [openAddDialog, setOpenAddDialog] = useState(false);
-// //   const [currentProduct, setCurrentProduct] = useState({
-// //     name: '',
-// //     category: '',
-// //     stock: '',
-// //     price: '',
-// //   });
-
-// //   const handleAddProduct = () => {
-// //     const newProduct = {
-// //       ...currentProduct,
-// //       id: products.length + 1,
-// //       status: currentProduct.stock > 20 ? 'In Stock' : 
-// //               currentProduct.stock > 0 ? 'Low Stock' : 'Out of Stock'
-// //     };
-// //     setProducts([...products, newProduct]);
-// //     setOpenAddDialog(false);
-// //     setCurrentProduct({ name: '', category: '', stock: '', price: '' });
-// //   };
-
-// //   const handleEditProduct = (product) => {
-// //     setCurrentProduct(product);
-// //     setOpenAddDialog(true);
-// //   };
-
-// //   const handleDeleteProduct = (id) => {
-// //     setProducts(products.filter(product => product.id !== id));
-// //   };
-
-// //   const getStatusColor = (status) => {
-// //     switch(status) {
-// //       case 'In Stock': return 'success';
-// //       case 'Low Stock': return 'warning';
-// //       case 'Out of Stock': return 'error';
-// //       default: return 'default';
-// //     }
-// //   };
-
-// //   return (
-// //     <Box sx={{ flexGrow: 1, p: 3, mt: 16, backgroundColor: 'background.default' }}>
-// //       <Grid container spacing={3}>
-// //         <Grid item xs={12}>
-// //           <Stack 
-// //             direction="row" 
-// //             justifyContent="space-between" 
-// //             alignItems="center" 
-// //             spacing={2}
-// //           >
-// //             <Typography variant="h4" gutterBottom>
-// //               Manage Inventory
-// //             </Typography>
-// //             <Button 
-// //               sx={{
-// //                 backgroundColor: "#c17912",
-// //               }}
-// //               variant="contained" 
-// //               startIcon={<AddIcon />} 
-// //               onClick={() => setOpenAddDialog(true)}
-// //             >
-// //               Add Product
-// //             </Button>
-// //           </Stack>
-// //         </Grid>
-
-// //         {/* Inventory Summary Cards */}
-// //         <Grid item xs={12} container spacing={2}>
-// //           <Grid item xs={12} md={4}>
-// //             <Card>
-// //               <CardContent>
-// //                 <Typography variant="h6" color="text.secondary">
-// //                   Total Products
-// //                 </Typography>
-// //                 <Typography variant="h4">{products.length}</Typography>
-// //               </CardContent>
-// //             </Card>
-// //           </Grid>
-// //           <Grid item xs={12} md={4}>
-// //             <Card>
-// //               <CardContent>
-// //                 <Typography variant="h6" color="text.secondary">
-// //                   In Stock Products
-// //                 </Typography>
-// //                 <Typography variant="h4">
-// //                   {products.filter(p => p.status === 'In Stock').length}
-// //                 </Typography>
-// //               </CardContent>
-// //             </Card>
-// //           </Grid>
-// //           <Grid item xs={12} md={4}>
-// //             <Card>
-// //               <CardContent>
-// //                 <Typography variant="h6" color="text.secondary">
-// //                   Low Stock Products
-// //                 </Typography>
-// //                 <Typography variant="h4">
-// //                   {products.filter(p => p.status === 'Low Stock').length}
-// //                 </Typography>
-// //               </CardContent>
-// //             </Card>
-// //           </Grid>
-// //         </Grid>
-
-// //         {/* Inventory Table */}
-// //         <Grid item xs={12}>
-// //           <Card>
-// //             <CardContent>
-// //               <TableContainer>
-// //                 <Table>
-// //                   <TableHead>
-// //                     <TableRow>
-// //                       <TableCell>Product Name</TableCell>
-// //                       <TableCell>Category</TableCell>
-// //                       <TableCell>Stock</TableCell>
-// //                       <TableCell>Price</TableCell>
-// //                       <TableCell>Status</TableCell>
-// //                       <TableCell align="right">Actions</TableCell>
-// //                     </TableRow>
-// //                   </TableHead>
-// //                   <TableBody>
-// //                     {products.map((product) => (
-// //                       <TableRow key={product.id}>
-// //                         <TableCell>{product.name}</TableCell>
-// //                         <TableCell>{product.category}</TableCell>
-// //                         <TableCell>{product.stock}</TableCell>
-// //                         <TableCell>₹{product.price}</TableCell>
-// //                         <TableCell>
-// //                           <Chip 
-// //                             label={product.status} 
-// //                             color={getStatusColor(product.status)} 
-// //                             size="small" 
-// //                           />
-// //                         </TableCell>
-// //                         <TableCell align="right">
-// //                           <IconButton onClick={() => handleEditProduct(product)}>
-// //                             <EditIcon />
-// //                           </IconButton>
-// //                           <IconButton onClick={() => handleDeleteProduct(product.id)}>
-// //                             <DeleteIcon />
-// //                           </IconButton>
-// //                         </TableCell>
-// //                       </TableRow>
-// //                     ))}
-// //                   </TableBody>
-// //                 </Table>
-// //               </TableContainer>
-// //             </CardContent>
-// //           </Card>
-// //         </Grid>
-// //       </Grid>
-
-// //       {/* Add/Edit Product Dialog */}
-// //       <Dialog 
-// //         open={openAddDialog} 
-// //         onClose={() => setOpenAddDialog(false)}
-// //         fullWidth
-// //         maxWidth="sm"
-// //       >
-// //         <DialogTitle>
-// //           {currentProduct.id ? 'Edit Product' : 'Add New Product'}
-// //         </DialogTitle>
-// //         <DialogContent>
-// //           <Grid container spacing={2} sx={{ mt: 1 }}>
-// //             <Grid item xs={12}>
-// //               <TextField
-// //                 fullWidth
-// //                 label="Product Name"
-// //                 value={currentProduct.name}
-// //                 onChange={(e) => setCurrentProduct({
-// //                   ...currentProduct, 
-// //                   name: e.target.value
-// //                 })}
-// //               />
-// //             </Grid>
-// //             <Grid item xs={12}>
-// //               <FormControl fullWidth>
-// //                 <InputLabel>Category</InputLabel>
-// //                 <Select
-// //                   value={currentProduct.category}
-// //                   label="Category"
-// //                   onChange={(e) => setCurrentProduct({
-// //                     ...currentProduct, 
-// //                     category: e.target.value
-// //                   })}
-// //                 >
-// //                   <MenuItem value="Jewelry & Accessories">
-// //                     Jewelry & Accessories
-// //                   </MenuItem>
-// //                 </Select>
-// //               </FormControl>
-// //             </Grid>
-// //             <Grid item xs={6}>
-// //               <TextField
-// //                 fullWidth
-// //                 label="Stock"
-// //                 type="number"
-// //                 value={currentProduct.stock}
-// //                 onChange={(e) => setCurrentProduct({
-// //                   ...currentProduct, 
-// //                   stock: e.target.value
-// //                 })}
-// //               />
-// //             </Grid>
-// //             <Grid item xs={6}>
-// //               <TextField
-// //                 fullWidth
-// //                 label="Price"
-// //                 type="number"
-// //                 value={currentProduct.price}
-// //                 onChange={(e) => setCurrentProduct({
-// //                   ...currentProduct, 
-// //                   price: e.target.value
-// //                 })}
-// //                 InputProps={{
-// //                   startAdornment: '₹'
-// //                 }}
-// //               />
-// //             </Grid>
-// //           </Grid>
-// //         </DialogContent>
-// //         <DialogActions>
-// //           <Button onClick={() => setOpenAddDialog(false)}>Cancel</Button>
-// //           <Button 
-// //             variant="contained" 
-// //             onClick={handleAddProduct}
-// //           >
-// //             {currentProduct.id ? 'Update' : 'Add'}
-// //           </Button>
-// //         </DialogActions>
-// //       </Dialog>
-// //     </Box>
-// //   );
-// // };
-
-// // export default Inventory;
-
 // import React, { useEffect, useState } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 // import { fetchInventory, deleteProduct, updateProduct } from "../store/inventorySlice";
+
+// // Components
+// import { ProductTable, InventoryStats, SearchFilters, ProductDetailPanel, ConfirmationDialog, NotificationManager ,MainContainer,STOCK_STATUS,ROW_HEIGHT} from "../components/index";
+
+// // Material UI
 // import {
 //   Box,
 //   Typography,
 //   Grid,
-//   Card,
-//   CardContent,
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableContainer,
-//   TableHead,
-//   TableRow,
 //   Paper,
 //   Button,
-//   IconButton,
-//   Chip,
 //   Stack,
-//   TablePagination,
-//   Dialog,
-//   DialogTitle,
-//   DialogContent,
-//   DialogActions,
-//   TextField,
+//   Alert,
+//   CircularProgress,
+//   useTheme
 // } from "@mui/material";
-// import { Edit as EditIcon, Delete as DeleteIcon, Add as AddIcon } from "@mui/icons-material";
+// import { Add as AddIcon } from "@mui/icons-material";
+
 
 // const Inventory = () => {
+//   const theme = useTheme();
 //   const dispatch = useDispatch();
 //   const { inventoryItems, isLoading, error } = useSelector((state) => state.inventory);
 
+//   // States
 //   const [page, setPage] = useState(0);
 //   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-//   // Use 'categories' to match the product model field
-//   const [editDialogOpen, setEditDialogOpen] = useState(false);
-//   const [editingProduct, setEditingProduct] = useState({
-//     id: "",
-//     categories: "",
-//     stock: 0,
-//     price: 0,
-//   });
-
+//   const [editingProduct, setEditingProduct] = useState(null);
+//   const [editedValues, setEditedValues] = useState({});
 //   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 //   const [productToDelete, setProductToDelete] = useState(null);
+//   const [expandedRow, setExpandedRow] = useState(null);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [filteredProducts, setFilteredProducts] = useState([]);
+//   const [filters, setFilters] = useState({
+//     showLowStock: false,
+//     showOutOfStock: false,
+//     showDiscount: false
+//   });
+//   const [notification, setNotification] = useState({
+//     open: false,
+//     message: "",
+//     severity: "success"
+//   });
+//   const [detailPanelOpen, setDetailPanelOpen] = useState(false);
 
+//   // Fetch inventory on component mount
 //   useEffect(() => {
 //     const userData = localStorage.getItem("user");
 //     if (userData) {
@@ -352,77 +56,118 @@
 //       if (sellerId) {
 //         dispatch(fetchInventory(sellerId));
 //       } else {
-//         console.error("Seller ID is missing in localStorage.");
+//         showNotification("Seller ID is missing in localStorage.", "error");
 //       }
 //     }
 //   }, [dispatch]);
 
-//   const products = inventoryItems;
+//   // Filter products based on search and filters
+//   useEffect(() => {
+//     if (inventoryItems && inventoryItems.length > 0) {
+//       let results = [...inventoryItems];
 
-//   const computeStatus = (stock, status) => {
-//     if (status) return status;
-//     if (stock === 0) return "Out of Stock";
-//     if (stock < 10) return "Low Stock";
-//     if (stock > 15) return "In Stock";
-//     return "Normal Stock";
-//   };
+//       // Apply search term filtering
+//       if (searchTerm) {
+//         results = results.filter(product =>
+//           product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//           (product.categories && product.categories.toLowerCase().includes(searchTerm.toLowerCase())) ||
+//           (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+//         );
+//       }
 
-//   const getStatusColor = (status) => {
-//     switch (status) {
-//       case "In Stock":
-//         return "success";
-//       case "Low Stock":
-//         return "warning";
-//       case "Out of Stock":
-//         return "error";
-//       case "Normal Stock":
-//         return "default";
-//       default:
-//         return "default";
+//       // Apply other filters
+//       if (filters.showLowStock) {
+//         results = results.filter(product => product.stock > 0 && product.stock < 10);
+//       }
+
+//       if (filters.showOutOfStock) {
+//         results = results.filter(product => product.stock === 0);
+//       }
+
+//       if (filters.showDiscount) {
+//         results = results.filter(product => product.discount === true);
+//       }
+
+//       setFilteredProducts(results);
+//     } else {
+//       setFilteredProducts([]);
 //     }
+//   }, [inventoryItems, searchTerm, filters]);
+
+//   // Helper functions
+//   const getProductStatus = (stock) => {
+//     if (stock === 0) return STOCK_STATUS.OUT_OF_STOCK;
+//     if (stock < 10) return STOCK_STATUS.LOW_STOCK;
+//     return STOCK_STATUS.IN_STOCK;
 //   };
 
+//   const showNotification = (message, severity = "success") => {
+//     setNotification({
+//       open: true,
+//       message,
+//       severity
+//     });
+//   };
+
+//   // Handler functions
 //   const handleChangePage = (event, newPage) => {
 //     setPage(newPage);
+//     setEditingProduct(null);
+//     setEditedValues({});
 //   };
 
 //   const handleChangeRowsPerPage = (event) => {
 //     setRowsPerPage(parseInt(event.target.value, 10));
 //     setPage(0);
+//     setEditingProduct(null);
+//     setEditedValues({});
 //   };
 
-//   const handleEditOpen = (product) => {
-//     setEditingProduct({
-//       id: product.id,
+//   const handleEditClick = (productId) => {
+//     const product = filteredProducts.find(p => p.id === productId);
+//     setEditingProduct(productId);
+//     setEditedValues({
 //       categories: product.categories || "",
 //       stock: product.stock,
-//       price: product.price,
+//       price: product.price
 //     });
-//     setEditDialogOpen(true);
 //   };
 
-//   const handleEditClose = () => {
-//     setEditDialogOpen(false);
+//   const handleCancelEdit = () => {
+//     setEditingProduct(null);
+//     setEditedValues({});
 //   };
 
-//   const handleEditChange = (e) => {
-//     const { name, value } = e.target;
-//     setEditingProduct((prev) => ({
-//       ...prev,
-//       [name]: name === "stock" || name === "price" ? Number(value) : value,
-//     }));
+//   const handleFieldChange = (field, value) => {
+//     setEditedValues({
+//       ...editedValues,
+//       [field]: field === "stock" || field === "price" ? Number(value) : value
+//     });
 //   };
 
-//   const handleEditSubmit = () => {
-//     // Retrieve sellerId from localStorage and dispatch the update action
+//   const handleSaveChanges = (productId) => {
+//     const updates = editedValues;
+
 //     const userData = localStorage.getItem("user");
 //     let sellerId = "";
 //     if (userData) {
 //       const user = JSON.parse(userData);
 //       sellerId = user.sellerId;
 //     }
-//     dispatch(updateProduct({ id: editingProduct.id, update: editingProduct, sellerId }));
-//     setEditDialogOpen(false);
+
+//     dispatch(updateProduct({
+//       id: productId,
+//       update: updates,
+//       sellerId
+//     }))
+//       .then(() => {
+//         showNotification("Product updated successfully!");
+//       })
+//       .catch(err => {
+//         showNotification("Failed to update product. Please try again.", "error");
+//       });
+
+//     handleCancelEdit();
 //   };
 
 //   const handleDeleteClick = (product) => {
@@ -432,7 +177,13 @@
 
 //   const handleDeleteConfirm = () => {
 //     if (productToDelete) {
-//       dispatch(deleteProduct(productToDelete.id));
+//       dispatch(deleteProduct(productToDelete.id))
+//         .then(() => {
+//           showNotification(`${productToDelete.name} has been deleted successfully.`);
+//         })
+//         .catch(() => {
+//           showNotification("Failed to delete product. Please try again.", "error");
+//         });
 //       setDeleteDialogOpen(false);
 //       setProductToDelete(null);
 //     }
@@ -443,256 +194,552 @@
 //     setProductToDelete(null);
 //   };
 
+//   const handleCloseNotification = () => {
+//     setNotification({ ...notification, open: false });
+//   };
+
+//   const toggleRowExpansion = (productId) => {
+//     if (expandedRow === productId) {
+//       setExpandedRow(null);
+//       setDetailPanelOpen(false);
+//     } else {
+//       setExpandedRow(productId);
+//       setDetailPanelOpen(true);
+//     }
+//   };
+
+//   const handleCloseDetailPanel = () => {
+//     setExpandedRow(null);
+//     setDetailPanelOpen(false);
+//   };
+
+//   const handleSearchChange = (event) => {
+//     setSearchTerm(event.target.value);
+//     setPage(0);
+//   };
+
+//   const toggleFilter = (filterName) => {
+//     setFilters({
+//       ...filters,
+//       [filterName]: !filters[filterName]
+//     });
+//     setPage(0);
+//   };
+
+//   const clearAllFilters = () => {
+//     setFilters({
+//       showLowStock: false,
+//       showOutOfStock: false,
+//       showDiscount: false
+//     });
+//     setSearchTerm("");
+//   };
+
+//   // Stats calculations
+//   const statsData = {
+//     totalProducts: inventoryItems.length,
+//     inStockCount: inventoryItems.filter(p => p.stock >= 10).length,
+//     lowStockCount: inventoryItems.filter(p => p.stock > 0 && p.stock < 10).length,
+//     outOfStockCount: inventoryItems.filter(p => p.stock === 0).length,
+//     discountedCount: inventoryItems.filter(p => p.discount === true).length
+//   };
+
 //   return (
-//     <Box sx={{ flexGrow: 1, p: 3, mt: 16, backgroundColor: "background.default" }}>
-//       <Grid container spacing={3}>
+//     <MainContainer>
+//       <Grid container spacing={3} maxWidth="lg" mx="auto">
 //         <Grid item xs={12}>
-//           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-//             <Typography variant="h4" gutterBottom>
+//           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} mb={2}>
+//             <Typography variant="h4" sx={{
+//               fontWeight: 600,
+//               color: theme.palette.custom.highlight,
+//               borderBottom: `2px solid ${theme.palette.custom.highlight}`,
+//               paddingBottom: 1
+//             }}>
 //               Manage Inventory
 //             </Typography>
-//             <Button sx={{ backgroundColor: "#c17912" }} variant="contained" startIcon={<AddIcon />}>
+//             <Button
+//               variant="contained"
+//               startIcon={<AddIcon />}
+//               sx={{
+//                 backgroundColor: theme.palette.custom.highlight,
+//                 color: theme.palette.common.white,
+//                 '&:hover': {
+//                   backgroundColor: theme.palette.custom.accent,
+//                 }
+//               }}
+//             >
 //               Add Product
 //             </Button>
 //           </Stack>
 //         </Grid>
 
 //         {isLoading ? (
-//           <Typography variant="h6" align="center">
-//             Loading...
-//           </Typography>
+//           <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+//             <CircularProgress sx={{ color: theme.palette.custom.highlight }} />
+//           </Grid>
 //         ) : error ? (
-//           <Typography variant="h6" color="error" align="center">
-//             {error}
-//           </Typography>
+//           <Grid item xs={12}>
+//             <Alert severity="error" variant="filled">
+//               {error}
+//             </Alert>
+//           </Grid>
 //         ) : (
 //           <>
-//             <Grid item xs={12} container spacing={2}>
-//               <Grid item xs={12} md={4}>
-//                 <Card>
-//                   <CardContent>
-//                     <Typography variant="h6">Total Products</Typography>
-//                     <Typography variant="h4">{products.length}</Typography>
-//                   </CardContent>
-//                 </Card>
-//               </Grid>
-//               <Grid item xs={12} md={4}>
-//                 <Card>
-//                   <CardContent>
-//                     <Typography variant="h6">In Stock</Typography>
-//                     <Typography variant="h4">
-//                       {products.filter((p) => computeStatus(p.stock, p.status) === "In Stock").length}
-//                     </Typography>
-//                   </CardContent>
-//                 </Card>
-//               </Grid>
-//               <Grid item xs={12} md={4}>
-//                 <Card>
-//                   <CardContent>
-//                     <Typography variant="h6">Low Stock</Typography>
-//                     <Typography variant="h4">
-//                       {products.filter((p) => computeStatus(p.stock, p.status) === "Low Stock").length}
-//                     </Typography>
-//                   </CardContent>
-//                 </Card>
-//               </Grid>
+//             {/* Stats Cards */}
+//             <Grid item xs={12}>
+//               <InventoryStats statsData={statsData} />
 //             </Grid>
 
+//             {/* Search and Filters */}
 //             <Grid item xs={12}>
-//               <TableContainer component={Paper}>
-//                 <Table>
-//                   <TableHead>
-//                     <TableRow>
-//                       <TableCell>Name</TableCell>
-//                       <TableCell>Categories</TableCell>
-//                       <TableCell>Stock</TableCell>
-//                       <TableCell>Price</TableCell>
-//                       <TableCell>Status</TableCell>
-//                       <TableCell>Actions</TableCell>
-//                     </TableRow>
-//                   </TableHead>
-//                   <TableBody>
-//                     {products
-//                       .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-//                       .map((product, index) => {
-//                         const productId = product.id || index;
-//                         const computedStatus = computeStatus(product.stock, product.status);
-//                         return (
-//                           <TableRow key={productId}>
-//                             <TableCell>{product.name}</TableCell>
-//                             <TableCell>{product.categories || "N/A"}</TableCell>
-//                             <TableCell>{product.stock}</TableCell>
-//                             <TableCell>
-//                               {product.currency} {product.price}
-//                             </TableCell>
-//                             <TableCell>
-//                               <Chip label={computedStatus} color={getStatusColor(computedStatus)} size="small" />
-//                             </TableCell>
-//                             <TableCell>
-//                               <IconButton onClick={() => handleEditOpen(product)}>
-//                                 <EditIcon />
-//                               </IconButton>
-//                               <IconButton onClick={() => handleDeleteClick(product)}>
-//                                 <DeleteIcon />
-//                               </IconButton>
-//                             </TableCell>
-//                           </TableRow>
-//                         );
-//                       })}
-//                   </TableBody>
-//                 </Table>
-//               </TableContainer>
-//               <TablePagination
-//                 rowsPerPageOptions={[5, 10, 25]}
-//                 component="div"
-//                 count={products.length}
-//                 rowsPerPage={rowsPerPage}
-//                 page={page}
-//                 onPageChange={handleChangePage}
-//                 onRowsPerPageChange={handleChangeRowsPerPage}
-//               />
+//               <Paper sx={{ p: 2, mb: 3 }}>
+//                 <SearchFilters
+//                   searchTerm={searchTerm}
+//                   filters={filters}
+//                   handleSearchChange={handleSearchChange}
+//                   toggleFilter={toggleFilter}
+//                   clearAllFilters={clearAllFilters}
+//                   statsData={statsData}
+//                 />
+//               </Paper>
+//             </Grid>
+
+//             {/* Products Table */}
+//             <Grid item xs={12}>
+//               <Paper elevation={3}>
+//                 <ProductTable
+//                   products={filteredProducts}
+//                   page={page}
+//                   rowsPerPage={rowsPerPage}
+//                   handleChangePage={handleChangePage}
+//                   handleChangeRowsPerPage={handleChangeRowsPerPage}
+//                   editingProduct={editingProduct}
+//                   editedValues={editedValues}
+//                   expandedRow={expandedRow}
+//                   getProductStatus={getProductStatus}
+//                   handleEditClick={handleEditClick}
+//                   handleDeleteClick={handleDeleteClick}
+//                   handleCancelEdit={handleCancelEdit}
+//                   handleFieldChange={handleFieldChange}
+//                   handleSaveChanges={handleSaveChanges}
+//                   toggleRowExpansion={toggleRowExpansion}
+//                   rowHeight={ROW_HEIGHT}
+//                 />
+//               </Paper>
 //             </Grid>
 //           </>
 //         )}
 //       </Grid>
 
-//       {/* Edit Dialog */}
-//       <Dialog open={editDialogOpen} onClose={handleEditClose}>
-//         <DialogTitle>Edit Product</DialogTitle>
-//         <DialogContent>
-//           <TextField
-//             margin="dense"
-//             label="Categories"
-//             name="categories"
-//             value={editingProduct.categories}
-//             onChange={handleEditChange}
-//             fullWidth
-//           />
-//           <TextField
-//             margin="dense"
-//             label="Stock"
-//             name="stock"
-//             type="number"
-//             value={editingProduct.stock}
-//             onChange={handleEditChange}
-//             fullWidth
-//           />
-//           <TextField
-//             margin="dense"
-//             label="Price"
-//             name="price"
-//             type="number"
-//             value={editingProduct.price}
-//             onChange={handleEditChange}
-//             fullWidth
-//           />
-//         </DialogContent>
-//         <DialogActions>
-//           <Button onClick={handleEditClose}>Cancel</Button>
-//           <Button onClick={handleEditSubmit} variant="contained">
-//             Save
-//           </Button>
-//         </DialogActions>
-//       </Dialog>
+//       {/* Expanded Product Details Panel */}
+//       {expandedRow && (
+//         <ProductDetailPanel
+//           product={filteredProducts.find(p => p.id === expandedRow)}
+//           onClose={handleCloseDetailPanel}
+//         />
+//       )}
 
 //       {/* Delete Confirmation Dialog */}
-//       <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-//         <DialogTitle>Confirm Delete</DialogTitle>
-//         <DialogContent>
-//           <Typography>
-//             Are you sure you want to delete <strong>{productToDelete?.name}</strong>?
-//           </Typography>
-//         </DialogContent>
-//         <DialogActions>
-//           <Button onClick={handleDeleteCancel}>Cancel</Button>
-//           <Button onClick={handleDeleteConfirm} color="error" variant="contained">
-//             Delete
-//           </Button>
-//         </DialogActions>
-//       </Dialog>
-//     </Box>
+//       <ConfirmationDialog
+//         open={deleteDialogOpen}
+//         title="Delete Product"
+//         message={`Are you sure you want to delete ${productToDelete?.name}?`}
+//         confirmLabel="Delete"
+//         cancelLabel="Cancel"
+//         onConfirm={handleDeleteConfirm}
+//         onCancel={handleDeleteCancel}
+//         confirmColor="error"
+//       />
+
+//       {/* Notification Snackbar */}
+//       <NotificationManager
+//         notification={notification}
+//         handleClose={handleCloseNotification}
+//       />
+//     </MainContainer>
 //   );
 // };
 
 // export default Inventory;
 
+// // Inventory.jsx
+// import React, { useEffect, useState } from "react";
+// import { useDispatch, useSelector } from "react-redux";
+// import { fetchInventory, deleteProduct, updateProduct } from "../store/inventorySlice";
+// import {
+//   ProductTable,
+//   InventoryStats,
+//   SearchFilters,
+//   ProductDetailPanel,
+//   ConfirmationDialog,
+//   NotificationManager,
+//   MainContainer,
+//   STOCK_STATUS,
+//   ROW_HEIGHT
+// } from "../components/index";
+// import { Box, Typography, Grid, Paper, Button, Stack, Alert, CircularProgress, useTheme, Modal } from "@mui/material";
+// import { Add as AddIcon } from "@mui/icons-material";
+// import AddProduct from "../Pages/AddProduct"; 
+
+// const Inventory = () => {
+//   const theme = useTheme();
+//   const dispatch = useDispatch();
+//   const { inventoryItems, isLoading, error } = useSelector((state) => state.inventory);
+
+//   // Inventory states
+//   const [page, setPage] = useState(0);
+//   const [rowsPerPage, setRowsPerPage] = useState(5);
+//   const [editingProduct, setEditingProduct] = useState(null);
+//   const [editedValues, setEditedValues] = useState({});
+//   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+//   const [productToDelete, setProductToDelete] = useState(null);
+//   const [expandedRow, setExpandedRow] = useState(null);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [filteredProducts, setFilteredProducts] = useState([]);
+//   const [filters, setFilters] = useState({
+//     showLowStock: false,
+//     showOutOfStock: false,
+//     showDiscount: false
+//   });
+//   const [notification, setNotification] = useState({
+//     open: false,
+//     message: "",
+//     severity: "success"
+//   });
+//   // State for opening the ProductForm modal (used for both add and edit)
+//   const [openProductForm, setOpenProductForm] = useState(false);
+//   const [productToEdit, setProductToEdit] = useState(null);
+
+//   // Fetch inventory on component mount
+//   useEffect(() => {
+//     const userData = localStorage.getItem("user");
+//     if (userData) {
+//       const user = JSON.parse(userData);
+//       const sellerId = user.sellerId;
+//       if (sellerId) {
+//         dispatch(fetchInventory(sellerId));
+//       } else {
+//         showNotification("Seller ID is missing in localStorage.", "error");
+//       }
+//     }
+//   }, [dispatch]);
+
+//   // Filter products based on search and filters
+//   useEffect(() => {
+//     if (inventoryItems && inventoryItems.length > 0) {
+//       let results = [...inventoryItems];
+//       // Search term filtering
+//       if (searchTerm) {
+//         results = results.filter(product =>
+//           product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+//           (product.categories && product.categories.toLowerCase().includes(searchTerm.toLowerCase())) ||
+//           (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+//         );
+//       }
+//       // Additional filters
+//       if (filters.showLowStock) {
+//         results = results.filter(product => product.stock > 0 && product.stock < 10);
+//       }
+//       if (filters.showOutOfStock) {
+//         results = results.filter(product => product.stock === 0);
+//       }
+//       if (filters.showDiscount) {
+//         results = results.filter(product => product.discount === true);
+//       }
+//       setFilteredProducts(results);
+//     } else {
+//       setFilteredProducts([]);
+//     }
+//   }, [inventoryItems, searchTerm, filters]);
+
+//   const getProductStatus = (stock) => {
+//     if (stock === 0) return STOCK_STATUS.OUT_OF_STOCK;
+//     if (stock < 10) return STOCK_STATUS.LOW_STOCK;
+//     return STOCK_STATUS.IN_STOCK;
+//   };
+
+//   const showNotification = (message, severity = "success") => {
+//     setNotification({
+//       open: true,
+//       message,
+//       severity
+//     });
+//   };
+
+//   // Handlers for pagination, editing, deletion, etc.
+//   const handleChangePage = (event, newPage) => {
+//     setPage(newPage);
+//   };
+
+//   const handleChangeRowsPerPage = (event) => {
+//     setRowsPerPage(parseInt(event.target.value, 10));
+//     setPage(0);
+//   };
+
+//   // For inline editing (if still needed), we now instead use the modal edit
+//   const handleEditProductClick = (product) => {
+//     setProductToEdit(product);
+//     setOpenProductForm(true);
+//   };
+
+//   const handleDeleteClick = (product) => {
+//     setProductToDelete(product);
+//     setDeleteDialogOpen(true);
+//   };
+
+//   const handleDeleteConfirm = () => {
+//     if (productToDelete) {
+//       dispatch(deleteProduct(productToDelete.id))
+//         .then(() => {
+//           showNotification(`${productToDelete.name} has been deleted successfully.`);
+//         })
+//         .catch(() => {
+//           showNotification("Failed to delete product. Please try again.", "error");
+//         });
+//       setDeleteDialogOpen(false);
+//       setProductToDelete(null);
+//     }
+//   };
+
+//   const handleDeleteCancel = () => {
+//     setDeleteDialogOpen(false);
+//     setProductToDelete(null);
+//   };
+
+//   const handleCloseNotification = () => {
+//     setNotification({ ...notification, open: false });
+//   };
+
+//   const toggleRowExpansion = (productId) => {
+//     if (expandedRow === productId) {
+//       setExpandedRow(null);
+//     } else {
+//       setExpandedRow(productId);
+//     }
+//   };
+
+//   const handleCloseDetailPanel = () => {
+//     setExpandedRow(null);
+//   };
+
+//   const handleSearchChange = (event) => {
+//     setSearchTerm(event.target.value);
+//     setPage(0);
+//   };
+
+//   const toggleFilter = (filterName) => {
+//     setFilters({
+//       ...filters,
+//       [filterName]: !filters[filterName]
+//     });
+//     setPage(0);
+//   };
+
+//   const clearAllFilters = () => {
+//     setFilters({
+//       showLowStock: false,
+//       showOutOfStock: false,
+//       showDiscount: false
+//     });
+//     setSearchTerm("");
+//   };
+
+//   // Handlers for opening the ProductForm modal for adding a new product
+//   const handleAddProductClick = () => {
+//     setProductToEdit(null);
+//     setOpenProductForm(true);
+//   };
+
+//   const handleCloseForm = () => {
+//     setOpenProductForm(false);
+//     setProductToEdit(null);
+//   };
+
+//   // Stats calculations
+//   const statsData = {
+//     totalProducts: inventoryItems.length,
+//     inStockCount: inventoryItems.filter(p => p.stock >= 10).length,
+//     lowStockCount: inventoryItems.filter(p => p.stock > 0 && p.stock < 10).length,
+//     outOfStockCount: inventoryItems.filter(p => p.stock === 0).length,
+//     discountedCount: inventoryItems.filter(p => p.discount === true).length
+//   };
+
+//   return (
+//     <MainContainer>
+//       <Grid container spacing={3} maxWidth="lg" mx="auto">
+//         <Grid item xs={12}>
+//           <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} mb={2}>
+//             <Typography variant="h4" sx={{
+//               fontWeight: 600,
+//               color: theme.palette.custom.highlight,
+//               borderBottom: `2px solid ${theme.palette.custom.highlight}`,
+//               paddingBottom: 1
+//             }}>
+//               Manage Inventory
+//             </Typography>
+//             <Button
+//               variant="contained"
+//               startIcon={<AddIcon />}
+//               onClick={handleAddProductClick}
+//               sx={{
+//                 backgroundColor: theme.palette.custom.highlight,
+//                 color: theme.palette.common.white,
+//                 '&:hover': { backgroundColor: theme.palette.custom.accent }
+//               }}
+//             >
+//               Add Product
+//             </Button>
+//           </Stack>
+//         </Grid>
+
+//         {isLoading ? (
+//           <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+//             <CircularProgress sx={{ color: theme.palette.custom.highlight }} />
+//           </Grid>
+//         ) : error ? (
+//           <Grid item xs={12}>
+//             <Alert severity="error" variant="filled">
+//               {error}
+//             </Alert>
+//           </Grid>
+//         ) : (
+//           <>
+//             {/* Stats Cards */}
+//             <Grid item xs={12}>
+//               <InventoryStats statsData={statsData} />
+//             </Grid>
+
+//             {/* Search and Filters */}
+//             <Grid item xs={12}>
+//               <Paper sx={{ p: 2, mb: 3 }}>
+//                 <SearchFilters
+//                   searchTerm={searchTerm}
+//                   filters={filters}
+//                   handleSearchChange={handleSearchChange}
+//                   toggleFilter={toggleFilter}
+//                   clearAllFilters={clearAllFilters}
+//                   statsData={statsData}
+//                 />
+//               </Paper>
+//             </Grid>
+
+//             {/* Products Table */}
+//             <Grid item xs={12}>
+//               <Paper elevation={3}>
+//                 <ProductTable
+//                   products={filteredProducts}
+//                   page={page}
+//                   rowsPerPage={rowsPerPage}
+//                   handleChangePage={handleChangePage}
+//                   handleChangeRowsPerPage={handleChangeRowsPerPage}
+//                   expandedRow={expandedRow}
+//                   getProductStatus={getProductStatus}
+//                   handleEditClick={handleEditProductClick}
+//                   handleDeleteClick={handleDeleteClick}
+//                   toggleRowExpansion={toggleRowExpansion}
+//                   rowHeight={ROW_HEIGHT}
+//                 />
+//               </Paper>
+//             </Grid>
+//           </>
+//         )}
+//       </Grid>
+
+//       {/* Expanded Product Details Panel */}
+//       {expandedRow && (
+//         <ProductDetailPanel
+//           product={filteredProducts.find(p => p.id === expandedRow)}
+//           onClose={handleCloseDetailPanel}
+//         />
+//       )}
+
+//       {/* Delete Confirmation Dialog */}
+//       <ConfirmationDialog
+//         open={deleteDialogOpen}
+//         title="Delete Product"
+//         message={`Are you sure you want to delete ${productToDelete?.name}?`}
+//         confirmLabel="Delete"
+//         cancelLabel="Cancel"
+//         onConfirm={handleDeleteConfirm}
+//         onCancel={handleDeleteCancel}
+//         confirmColor="error"
+//       />
+
+//       {/* Notification Snackbar */}
+//       <NotificationManager
+//         notification={notification}
+//         handleClose={handleCloseNotification}
+//       />
+
+//       {/* ProductForm Modal for Add/Edit */}
+//       <Modal open={openProductForm} onClose={handleCloseForm}>
+//         <Box sx={{
+//           position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+//           bgcolor: 'background.paper', boxShadow: 24, p: 4, width: { xs: '90%', md: '60%' }
+//         }}>
+//           <AddProduct
+//             initialValues={productToEdit}
+//             mode={productToEdit ? "edit" : "create"}
+//             onClose={handleCloseForm}
+//           />
+//         </Box>
+//       </Modal>
+//     </MainContainer>
+//   );
+// };
+
+// export default Inventory;
+
+
+
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchInventory, deleteProduct, updateProduct } from "../store/inventorySlice";
+import { fetchInventory, deleteProduct } from "../store/inventorySlice";
+import { useNavigate } from "react-router-dom";
 import {
-  Box,
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  IconButton,
-  Chip,
-  Stack,
-  TablePagination,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  Tooltip,
-  InputBase,
-  styled,
-} from "@mui/material";
-import { 
-  Edit as EditIcon, 
-  Delete as DeleteIcon, 
-  Add as AddIcon,
-  Save as SaveIcon,
-  Cancel as CancelIcon 
-} from "@mui/icons-material";
-
-// Styled components for the table header
-const StyledTableHead = styled(TableHead)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
-}));
-
-const StyledTableHeadCell = styled(TableCell)(({ theme }) => ({
-  color: theme.palette.common.white,
-  fontWeight: 'bold',
-  fontSize: '1rem',
-}));
-
-// Styled input component to remove spinner arrows
-const NumberInput = styled(InputBase)(({ theme }) => ({
-  '& input': {
-    padding: theme.spacing(1),
-    border: `1px solid ${theme.palette.divider}`,
-    borderRadius: theme.shape.borderRadius,
-    width: '100%',
-    '&::-webkit-inner-spin-button, &::-webkit-outer-spin-button': {
-      '-webkit-appearance': 'none',
-      margin: 0,
-    },
-    '&[type=number]': {
-      '-moz-appearance': 'textfield',
-    },
-  },
-}));
+  ProductTable,
+  InventoryStats,
+  SearchFilters,
+  ProductDetailPanel,
+  ConfirmationDialog,
+  NotificationManager,
+  MainContainer,
+  STOCK_STATUS,
+  ROW_HEIGHT
+} from "../components/index";
+import { Box, Typography, Grid, Paper, Button, Stack, Alert, CircularProgress, useTheme, Modal, IconButton } from "@mui/material";
+import { Add as AddIcon, Close as CloseIcon } from "@mui/icons-material";
+import AddProduct from "../Pages/AddProduct";
 
 const Inventory = () => {
+  const theme = useTheme();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { inventoryItems, isLoading, error } = useSelector((state) => state.inventory);
 
+  // Inventory states
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [editingRows, setEditingRows] = useState({});
-  const [editedValues, setEditedValues] = useState({});
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+  const [expandedRow, setExpandedRow] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filters, setFilters] = useState({
+    showLowStock: false,
+    showOutOfStock: false,
+    showDiscount: false
+  });
+  const [notification, setNotification] = useState({
+    open: false,
+    message: "",
+    severity: "success"
+  });
+  // State for editing product in modal
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState(null);
 
+  // Fetch inventory on component mount
   useEffect(() => {
     const userData = localStorage.getItem("user");
     if (userData) {
@@ -701,117 +748,80 @@ const Inventory = () => {
       if (sellerId) {
         dispatch(fetchInventory(sellerId));
       } else {
-        console.error("Seller ID is missing in localStorage.");
+        showNotification("Seller ID is missing in localStorage.", "error");
       }
     }
   }, [dispatch]);
 
-  const products = inventoryItems;
-
-  const computeStatus = (stock, status) => {
-    if (status) return status;
-    if (stock === 0) return "Out of Stock";
-    if (stock < 10) return "Low Stock";
-    if (stock > 15) return "In Stock";
-    return "Normal Stock";
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "In Stock":
-        return "success";
-      case "Low Stock":
-        return "warning";
-      case "Out of Stock":
-        return "error";
-      case "Normal Stock":
-        return "default";
-      default:
-        return "default";
+  // Filter products based on search and filters
+  useEffect(() => {
+    if (inventoryItems && inventoryItems.length > 0) {
+      let results = [...inventoryItems];
+      // Search term filtering
+      if (searchTerm) {
+        results = results.filter(product =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (product.categories && product.categories.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+        );
+      }
+      // Additional filters
+      if (filters.showLowStock) {
+        results = results.filter(product => product.stock > 0 && product.stock < 10);
+      }
+      if (filters.showOutOfStock) {
+        results = results.filter(product => product.stock === 0);
+      }
+      if (filters.showDiscount) {
+        results = results.filter(product => product.discount === true);
+      }
+      setFilteredProducts(results);
+    } else {
+      setFilteredProducts([]);
     }
+  }, [inventoryItems, searchTerm, filters]);
+
+  const getProductStatus = (stock) => {
+    if (stock === 0) return STOCK_STATUS.OUT_OF_STOCK;
+    if (stock < 10) return STOCK_STATUS.LOW_STOCK;
+    return STOCK_STATUS.IN_STOCK;
   };
 
+  const showNotification = (message, severity = "success") => {
+    setNotification({
+      open: true,
+      message,
+      severity
+    });
+  };
+
+  // Pagination handlers
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    // Cancel any active editing when changing pages
-    setEditingRows({});
-    setEditedValues({});
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-    // Cancel any active editing when changing rows per page
-    setEditingRows({});
-    setEditedValues({});
   };
 
-  const handleEditClick = (productId) => {
-    // Find the product
-    const product = products.find(p => p.id === productId);
-    
-    // Set up editing state for this row
-    setEditingRows({
-      ...editingRows,
-      [productId]: true
-    });
-    
-    // Pre-populate edited values
-    setEditedValues({
-      ...editedValues,
-      [productId]: {
-        categories: product.categories || "",
-        stock: product.stock,
-        price: product.price
-      }
-    });
+  // Edit product in modal
+  const handleEditProductClick = (product) => {
+    setProductToEdit(product);
+    setEditModalOpen(true);
   };
 
-  const handleCancelEdit = (productId) => {
-    // Remove this product from editing state
-    const newEditingRows = { ...editingRows };
-    delete newEditingRows[productId];
-    setEditingRows(newEditingRows);
-    
-    // Clear edited values for this product
-    const newEditedValues = { ...editedValues };
-    delete newEditedValues[productId];
-    setEditedValues(newEditedValues);
+  // Navigate to Add Product page
+  const handleAddProductClick = () => {
+    navigate('/add-product');
   };
 
-  const handleFieldChange = (productId, field, value) => {
-    setEditedValues({
-      ...editedValues,
-      [productId]: {
-        ...editedValues[productId],
-        [field]: field === "stock" || field === "price" ? Number(value) : value
-      }
-    });
+  const handleCloseEditModal = () => {
+    setEditModalOpen(false);
+    setProductToEdit(null);
   };
 
-  const handleSaveChanges = (productId) => {
-    // Get the updated values
-    const updates = editedValues[productId];
-    
-    // Retrieve sellerId from localStorage
-    const userData = localStorage.getItem("user");
-    let sellerId = "";
-    if (userData) {
-      const user = JSON.parse(userData);
-      sellerId = user.sellerId;
-    }
-    
-    // Dispatch update action
-    dispatch(updateProduct({ 
-      id: productId, 
-      update: updates, 
-      sellerId 
-    }));
-    
-    // Exit editing mode
-    handleCancelEdit(productId);
-  };
-
+  // Delete product handlers
   const handleDeleteClick = (product) => {
     setProductToDelete(product);
     setDeleteDialogOpen(true);
@@ -819,7 +829,13 @@ const Inventory = () => {
 
   const handleDeleteConfirm = () => {
     if (productToDelete) {
-      dispatch(deleteProduct(productToDelete.id));
+      dispatch(deleteProduct(productToDelete.id))
+        .then(() => {
+          showNotification(`${productToDelete.name} has been deleted successfully.`);
+        })
+        .catch(() => {
+          showNotification("Failed to delete product. Please try again.", "error");
+        });
       setDeleteDialogOpen(false);
       setProductToDelete(null);
     }
@@ -830,218 +846,195 @@ const Inventory = () => {
     setProductToDelete(null);
   };
 
+  const handleCloseNotification = () => {
+    setNotification({ ...notification, open: false });
+  };
+
+  // Row expansion handlers
+  const toggleRowExpansion = (productId) => {
+    if (expandedRow === productId) {
+      setExpandedRow(null);
+    } else {
+      setExpandedRow(productId);
+    }
+  };
+
+  const handleCloseDetailPanel = () => {
+    setExpandedRow(null);
+  };
+
+  // Search and filter handlers
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    setPage(0);
+  };
+
+  const toggleFilter = (filterName) => {
+    setFilters({
+      ...filters,
+      [filterName]: !filters[filterName]
+    });
+    setPage(0);
+  };
+
+  const clearAllFilters = () => {
+    setFilters({
+      showLowStock: false,
+      showOutOfStock: false,
+      showDiscount: false
+    });
+    setSearchTerm("");
+  };
+
+  // Stats calculations
+  const statsData = {
+    totalProducts: inventoryItems.length,
+    inStockCount: inventoryItems.filter(p => p.stock >= 10).length,
+    lowStockCount: inventoryItems.filter(p => p.stock > 0 && p.stock < 10).length,
+    outOfStockCount: inventoryItems.filter(p => p.stock === 0).length,
+    discountedCount: inventoryItems.filter(p => p.discount === true).length
+  };
+
   return (
-    <Box sx={{ flexGrow: 1, p: 3, mt: 16, backgroundColor: "background.default" }}>
-      <Grid container spacing={3}>
+    <MainContainer>
+      <Grid container spacing={3} maxWidth="lg" mx="auto">
         <Grid item xs={12}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2}>
-            <Typography variant="h4" gutterBottom>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={2} mb={2}>
+            <Typography variant="h4" sx={{
+              fontWeight: 600,
+              color: theme.palette.custom.highlight,
+              borderBottom: `2px solid ${theme.palette.custom.highlight}`,
+              paddingBottom: 1
+            }}>
               Manage Inventory
             </Typography>
-            <Button sx={{ backgroundColor: "#c17912" }} variant="contained" startIcon={<AddIcon />}>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleAddProductClick}
+              sx={{
+                backgroundColor: theme.palette.custom.highlight,
+                color: theme.palette.common.white,
+                '&:hover': { backgroundColor: theme.palette.custom.accent }
+              }}
+            >
               Add Product
             </Button>
           </Stack>
         </Grid>
 
         {isLoading ? (
-          <Typography variant="h6" align="center">
-            Loading...
-          </Typography>
+          <Grid item xs={12} display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+            <CircularProgress sx={{ color: theme.palette.custom.highlight }} />
+          </Grid>
         ) : error ? (
-          <Typography variant="h6" color="error" align="center">
-            {error}
-          </Typography>
+          <Grid item xs={12}>
+            <Alert severity="error" variant="filled">
+              {error}
+            </Alert>
+          </Grid>
         ) : (
           <>
-            <Grid item xs={12} container spacing={2}>
-              <Grid item xs={12} md={4}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">Total Products</Typography>
-                    <Typography variant="h4">{products.length}</Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">In Stock</Typography>
-                    <Typography variant="h4">
-                      {products.filter((p) => computeStatus(p.stock, p.status) === "In Stock").length}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Card>
-                  <CardContent>
-                    <Typography variant="h6">Low Stock</Typography>
-                    <Typography variant="h4">
-                      {products.filter((p) => computeStatus(p.stock, p.status) === "Low Stock").length}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
+            {/* Stats Cards */}
+            <Grid item xs={12}>
+              <InventoryStats statsData={statsData} />
             </Grid>
 
+            {/* Search and Filters */}
             <Grid item xs={12}>
-              <TableContainer sx={{ boxShadow: 3 }}>
-                <Table>
-                  <StyledTableHead>
-                    <TableRow sx={{ bgcolor : "grey"}}>
-                      <StyledTableHeadCell>Name</StyledTableHeadCell>
-                      <StyledTableHeadCell>Categories</StyledTableHeadCell>
-                      <StyledTableHeadCell>Stock</StyledTableHeadCell>
-                      <StyledTableHeadCell>Price</StyledTableHeadCell>
-                      <StyledTableHeadCell>Status</StyledTableHeadCell>
-                      <StyledTableHeadCell align="center">Actions</StyledTableHeadCell>
-                    </TableRow>
-                  </StyledTableHead>
-                  <TableBody>
-                    {products
-                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                      .map((product, index) => {
-                        const productId = product.id || index;
-                        const isEditing = editingRows[productId];
-                        const computedStatus = computeStatus(product.stock, product.status);
-                        
-                        return (
-                          <TableRow key={productId} hover>
-                            <TableCell>{product.name}</TableCell>
-                            
-                            <TableCell>
-                              {isEditing ? (
-                                <TextField
-                                  size="small"
-                                  value={editedValues[productId]?.categories || product.categories || ""}
-                                  onChange={(e) => handleFieldChange(productId, "categories", e.target.value)}
-                                  variant="outlined"
-                                  fullWidth
-                                />
-                              ) : (
-                                product.categories || "N/A"
-                              )}
-                            </TableCell>
-                            
-                            <TableCell>
-                              {isEditing ? (
-                                <NumberInput
-                                  type="number"
-                                  value={editedValues[productId]?.stock}
-                                  onChange={(e) => handleFieldChange(productId, "stock", e.target.value)}
-                                  sx={{ width: '80px' }}
-                                  inputProps={{
-                                    min: 0,
-                                    step: 1
-                                  }}
-                                />
-                              ) : (
-                                product.stock
-                              )}
-                            </TableCell>
-                            
-                            <TableCell>
-                              {isEditing ? (
-                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                  <Typography sx={{ mr: 1 }}>{product.currency}</Typography>
-                                  <NumberInput
-                                    type="number"
-                                    value={editedValues[productId]?.price}
-                                    onChange={(e) => handleFieldChange(productId, "price", e.target.value)}
-                                    sx={{ width: '100px' }}
-                                    inputProps={{
-                                      min: 0,
-                                      step: 0.01
-                                    }}
-                                  />
-                                </Box>
-                              ) : (
-                                `${product.currency} ${product.price}`
-                              )}
-                            </TableCell>
-                            
-                            <TableCell>
-                              <Chip 
-                                label={computedStatus} 
-                                color={getStatusColor(computedStatus)} 
-                                size="small" 
-                              />
-                            </TableCell>
-                            
-                            <TableCell align="center">
-                              {isEditing ? (
-                                <>
-                                  <Tooltip title="Save">
-                                    <IconButton 
-                                      onClick={() => handleSaveChanges(productId)}
-                                      color="grey"
-                                      size="small"
-                                    >
-                                      <SaveIcon />
-                                    </IconButton>
-                                  </Tooltip>
-                                  <Tooltip title="Cancel">
-                                    <IconButton 
-                                      onClick={() => handleCancelEdit(productId)}
-                                      color="default"
-                                      size="small"
-                                    >
-                                      <CancelIcon />
-                                    </IconButton>
-                                  </Tooltip>
-                                </>
-                              ) : (
-                                <>
-                                  <Tooltip title="Edit">
-                                    <IconButton onClick={() => handleEditClick(productId)} size="small">
-                                      <EditIcon />
-                                    </IconButton>
-                                  </Tooltip>
-                                  <Tooltip title="Delete">
-                                    <IconButton onClick={() => handleDeleteClick(product)} size="small">
-                                      <DeleteIcon />
-                                    </IconButton>
-                                  </Tooltip>
-                                </>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
-                component="div"
-                count={products.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
+              <Paper sx={{ p: 2, mb: 3 }}>
+                <SearchFilters
+                  searchTerm={searchTerm}
+                  filters={filters}
+                  handleSearchChange={handleSearchChange}
+                  toggleFilter={toggleFilter}
+                  clearAllFilters={clearAllFilters}
+                  statsData={statsData}
+                />
+              </Paper>
+            </Grid>
+
+            {/* Products Table */}
+            <Grid item xs={12}>
+              <Paper elevation={3}>
+                <ProductTable
+                  products={filteredProducts}
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  handleChangePage={handleChangePage}
+                  handleChangeRowsPerPage={handleChangeRowsPerPage}
+                  expandedRow={expandedRow}
+                  getProductStatus={getProductStatus}
+                  handleEditClick={handleEditProductClick}
+                  handleDeleteClick={handleDeleteClick}
+                  toggleRowExpansion={toggleRowExpansion}
+                  rowHeight={ROW_HEIGHT}
+                />
+              </Paper>
             </Grid>
           </>
         )}
       </Grid>
 
+      {/* Expanded Product Details Panel */}
+      {expandedRow && (
+        <ProductDetailPanel
+          product={filteredProducts.find(p => p.id === expandedRow)}
+          onClose={handleCloseDetailPanel}
+        />
+      )}
+
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onClose={handleDeleteCancel}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Are you sure you want to delete <strong>{productToDelete?.name}</strong>?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDeleteCancel}>Cancel</Button>
-          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+      <ConfirmationDialog
+        open={deleteDialogOpen}
+        title="Delete Product"
+        message={`Are you sure you want to delete ${productToDelete?.name}?`}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={handleDeleteConfirm}
+        onCancel={handleDeleteCancel}
+        confirmColor="error"
+      />
+
+      {/* Notification Snackbar */}
+      <NotificationManager
+        notification={notification}
+        handleClose={handleCloseNotification}
+      />
+
+      {/* Edit Product Modal */}
+      <Modal
+        open={editModalOpen}
+        onClose={handleCloseEditModal}
+        aria-labelledby="edit-product-modal"
+      >
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 0,
+          width: { xs: '95%', sm: '90%', md: '85%', lg: '80%' },
+          maxWidth: 'lg',
+          maxHeight: '90vh',
+          overflow: 'auto',
+          borderRadius: 2,
+        }}>
+          <Box display="flex" justifyContent="flex-end" p={1}>
+            <IconButton onClick={handleCloseEditModal} sx={{ color: theme.palette.custom.highlight }}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <AddProduct
+            initialValues={productToEdit}
+            mode="edit"
+            onClose={handleCloseEditModal}
+          />
+        </Box>
+      </Modal>
+    </MainContainer>
   );
 };
 
