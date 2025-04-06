@@ -1,9 +1,9 @@
 import React from 'react';
-import { 
-  Box, 
-  Typography, 
-  Card, 
-  CardContent, 
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
   CardHeader,
   List,
   ListItem,
@@ -12,73 +12,77 @@ import {
   Avatar,
   LinearProgress,
   Divider,
-  Button
+  Button,
+  useTheme
 } from '@mui/material';
 import { TrendingUp, TrendingDown, Eye } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const ProductPerformance = () => {
+  const theme = useTheme();
+  const navigate = useNavigate();
   // Sample data - in a real application this would come from props or an API
   const products = [
-    { 
-      id: 1, 
-      name: 'Organic Cotton T-Shirt', 
-      sales: 42, 
-      revenue: 2100, 
-      trend: 'up', 
-      performance: 80, 
-      image: '/api/placeholder/40/40' 
+    {
+      id: 1,
+      name: 'Organic Cotton T-Shirt',
+      sales: 42,
+      revenue: 2100,
+      trend: 'up',
+      performance: 80,
+      image: '/api/placeholder/40/40'
     },
-    { 
-      id: 2, 
-      name: 'Handcrafted Wooden Bowl', 
-      sales: 35, 
-      revenue: 1750, 
-      trend: 'up', 
-      performance: 75, 
-      image: '/api/placeholder/40/40' 
+    {
+      id: 2,
+      name: 'Handcrafted Wooden Bowl',
+      sales: 35,
+      revenue: 1750,
+      trend: 'up',
+      performance: 75,
+      image: '/api/placeholder/40/40'
     },
-    { 
-      id: 3, 
-      name: 'Natural Soap Bar', 
-      sales: 28, 
-      revenue: 840, 
-      trend: 'down', 
-      performance: 62, 
-      image: '/api/placeholder/40/40' 
+    {
+      id: 3,
+      name: 'Natural Soap Bar',
+      sales: 28,
+      revenue: 840,
+      trend: 'down',
+      performance: 62,
+      image: '/api/placeholder/40/40'
     },
-    { 
-      id: 4, 
-      name: 'Eco-Friendly Water Bottle', 
-      sales: 21, 
-      revenue: 630, 
-      trend: 'up', 
-      performance: 55, 
-      image: '/api/placeholder/40/40' 
+    {
+      id: 4,
+      name: 'Eco-Friendly Water Bottle',
+      sales: 21,
+      revenue: 630,
+      trend: 'up',
+      performance: 55,
+      image: '/api/placeholder/40/40'
     },
-    { 
-      id: 5, 
-      name: 'Bamboo Toothbrush Set', 
-      sales: 18, 
-      revenue: 540, 
-      trend: 'down', 
-      performance: 48, 
-      image: '/api/placeholder/40/40' 
+    {
+      id: 5,
+      name: 'Bamboo Toothbrush Set',
+      sales: 18,
+      revenue: 540,
+      trend: 'down',
+      performance: 48,
+      image: '/api/placeholder/40/40'
     },
-    { 
-      id: 6, 
-      name: 'Reusable Produce Bags', 
-      sales: 15, 
-      revenue: 375, 
-      trend: 'up', 
-      performance: 42, 
-      image: '/api/placeholder/40/40' 
+    {
+      id: 6,
+      name: 'Reusable Produce Bags',
+      sales: 15,
+      revenue: 375,
+      trend: 'up',
+      performance: 42,
+      image: '/api/placeholder/40/40'
     },
   ];
 
   return (
     <Card sx={{ height: '100%', boxShadow: 2, display: 'flex', flexDirection: 'column' }}>
-      <CardHeader 
-        title="Top Performing Products" 
+      <CardHeader
+        title="Top Performing Products"
         subheader="Based on sales and revenue"
         sx={{ pb: 1 }}
       />
@@ -86,13 +90,13 @@ const ProductPerformance = () => {
       <CardContent sx={{ pt: 1, pb: 0, flexGrow: 1, overflow: 'auto' }}>
         <List sx={{ width: '100%' }}>
           {products.map((product) => (
-            <ListItem 
+            <ListItem
               key={product.id}
               alignItems="flex-start"
-              sx={{ 
-                px: 0, 
+              sx={{
+                px: 0,
                 py: 1.5,
-                borderBottom: '1px solid', 
+                borderBottom: '1px solid',
                 borderColor: 'divider',
                 '&:last-child': {
                   borderBottom: 'none'
@@ -100,8 +104,8 @@ const ProductPerformance = () => {
               }}
             >
               <ListItemAvatar>
-                <Avatar 
-                  alt={product.name} 
+                <Avatar
+                  alt={product.name}
                   src={product.image}
                   variant="rounded"
                   sx={{ width: 48, height: 48 }}
@@ -116,18 +120,18 @@ const ProductPerformance = () => {
                 secondary={
                   <React.Fragment>
                     <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
-                      <Typography 
-                        component="span" 
-                        variant="body2" 
+                      <Typography
+                        component="span"
+                        variant="body2"
                         color="text.primary"
                         fontWeight={500}
                         sx={{ mr: 2 }}
                       >
                         ₹{product.revenue.toLocaleString()}
                       </Typography>
-                      <Typography 
-                        component="span" 
-                        variant="body2" 
+                      <Typography
+                        component="span"
+                        variant="body2"
                         color="text.secondary"
                         sx={{ mr: 1 }}
                       >
@@ -151,17 +155,17 @@ const ProductPerformance = () => {
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', width: '100%', mt: 1 }}>
                       <Box sx={{ flexGrow: 1, mr: 1 }}>
-                        <LinearProgress 
-                          variant="determinate" 
-                          value={product.performance} 
-                          sx={{ 
-                            height: 6, 
+                        <LinearProgress
+                          variant="determinate"
+                          value={product.performance}
+                          sx={{
+                            height: 6,
                             borderRadius: 1,
                             backgroundColor: 'action.hover',
                             '& .MuiLinearProgress-bar': {
-                              backgroundColor: 
-                                product.performance > 70 ? 'success.main' : 
-                                product.performance > 50 ? 'warning.main' : 'error.main'
+                              backgroundColor:
+                                product.performance > 70 ? 'success.main' :
+                                  product.performance > 50 ? 'warning.main' : 'error.main'
                             }
                           }}
                         />
@@ -178,12 +182,24 @@ const ProductPerformance = () => {
           ))}
         </List>
       </CardContent>
-      <Box sx={{ p: 2, pt: 0, mt: 'auto' }}>
-        <Button 
-          variant="outlined" 
-          fullWidth 
+      <Box sx={{ p: 2, pt: 0, mx: 'auto' }}>
+        <Button
+          variant="outlined"
+          // fullWidth
           startIcon={<Eye size={16} />}
-          sx={{ mt: 1 }}
+          sx={{
+            borderRadius: "4px",
+            px: 3,
+            py: 1,
+            color: theme.palette.custom.highlight,
+            borderColor: theme.palette.custom.highlight,
+            "&:hover": {
+              borderColor: theme.palette.custom.accent,
+              backgroundColor: theme.palette.tints.tint2,
+            },
+            flex: { xs: 1, sm: "none" },
+          }}
+          onClick={() => navigate('/inventory')}
         >
           View All Products
         </Button>

@@ -1,19 +1,16 @@
-import { storage, generateUniqueId } from './appwriteConfig';
+import { storage } from './appwriteConfig';
 
-const uploadImage = async (file) => {
+// Async function to upload image to Appwrite
+const uploadImageToAppwrite = async (file) => {
   try {
     const response = await storage.createFile(
-      '67f226020009ef702b5c',  // Replace with your Appwrite bucket ID
-      generateUniqueId(), 
+      '67f226020009ef702b5c', // Your bucket ID
+      generateUniqueId(),      // Unique file ID
       file
     );
-    // Option 1: Return the file ID (you can generate the preview URL later)
     return response.$id;
-    // Option 2: Generate a preview URL if needed:
-    // const previewUrl = storage.getFilePreview('[BUCKET_ID]', response.$id);
-    // return previewUrl;
   } catch (error) {
-    console.error('Error uploading image:', error);
-    throw error;
+    console.error('Appwrite storage error:', error);
+    throw new Error('Image upload failed: ' + error.message);
   }
 };
