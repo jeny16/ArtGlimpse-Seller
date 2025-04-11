@@ -1,11 +1,10 @@
 import { Client, Storage, ID, Account } from 'appwrite';
+import conf from "../conf/conf"
 
 // Initialize the Appwrite client
 const client = new Client()
-  .setEndpoint('https://cloud.appwrite.io/v1') // Your Appwrite endpoint
-  .setProject('67f225d6001b11e422b8');         // Your Appwrite project ID
-
-// Create Account and Storage instances
+  .setEndpoint(conf.appwriteUrl)
+  .setProject(conf.appwriteProjectId);
 export const account = new Account(client);
 export const storage = new Storage(client);
 export const generateUniqueId = ID.unique;
