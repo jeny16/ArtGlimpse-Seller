@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent, Box, Typography, Stack } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { getImageUrl } from "../appwrite/uploadimage";
 
 const ProductCard = ({ item }) => {
     const theme = useTheme();
@@ -20,7 +21,11 @@ const ProductCard = ({ item }) => {
         >
             <Box
                 component="img"
-                src={product.images && product.images.length > 0 ? product.images[0] : "/api/placeholder/120/160"}
+                src={
+                    product.images && product.images.length > 0
+                        ? getImageUrl(product.images[0])
+                        : "/api/placeholder/120/160"
+                }
                 alt={product.name}
                 sx={{
                     width: 100,

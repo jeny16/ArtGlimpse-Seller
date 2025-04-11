@@ -10,12 +10,10 @@ import {
     Divider,
     IconButton,
     Stack,
-    Paper,
     useTheme,
     Avatar,
     Badge,
     Tooltip,
-    Rating,
     Card,
     CardContent,
     Tabs,
@@ -42,6 +40,7 @@ import {
     VerifiedUser as VerifiedIcon
 } from '@mui/icons-material';
 import { formatCurrency, formatDate, daysUntil } from '../index';
+import { getImageUrl } from '../../appwrite/uploadimage';
 
 const DetailItem = ({ icon, label, value }) => {
     const theme = useTheme();
@@ -119,37 +118,39 @@ const SectionTitle = ({ title, icon }) => {
 
 const ProductDetailPanel = ({ product, onClose, open }) => {
     const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
     const [tabValue, setTabValue] = React.useState(0);
-    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
     if (!product) return null;
 
-    // Calculate original price from discounted price and discount percentage
-    const originalPrice = product.discount
-        ? Math.round(product.price / (1 - product.percentage_Discount / 100))
-        : product.price;
+    // Normalize images through Appwrite helper
+    const images = (product.images || []).map(getImageUrl);
 
-    // Calculate savings
-    const savings = product.discount
-        ? originalPrice - product.price
+    // Check if discount is still valid
+    const now = new Date();
+    const validUntil = product.valid_Until_Discount ? new Date(product.valid_Until_Discount) : null;
+    const discountValid = product.discount && validUntil && validUntil > now;
+
+    // Price calculations
+    const originalPrice = product.price;
+    const discountPct = product.percentage_Discount || 0;
+    const discountedPrice = discountValid
+        ? Math.round(originalPrice * (1 - discountPct / 100))
+        : originalPrice;
+    const savings = discountValid
+        ? originalPrice - discountedPrice
         : 0;
 
-    const handlePrevImage = () => {
-        setCurrentImageIndex((prev) =>
-            prev === 0 ? product.images.length - 1 : prev - 1
+    const handlePrevImage = () =>
+        setCurrentImageIndex(i =>
+            i === 0 ? images.length - 1 : i - 1
         );
-    };
-
-    const handleNextImage = () => {
-        setCurrentImageIndex((prev) =>
-            prev === product.images.length - 1 ? 0 : prev + 1
+    const handleNextImage = () =>
+        setCurrentImageIndex(i =>
+            i === images.length - 1 ? 0 : i + 1
         );
-    };
-
-    const handleTabChange = (event, newValue) => {
-        setTabValue(newValue);
-    };
+    const handleTabChange = (_, v) => setTabValue(v);
 
     return (
         <Dialog
@@ -157,7 +158,6 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
             onClose={onClose}
             maxWidth="lg"
             fullWidth
-            // maxHeight="90%"
             fullScreen={fullScreen}
             PaperProps={{
                 sx: {
@@ -179,29 +179,13 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
                     alignItems: 'center'
                 }}
             >
-                <Typography
-                    variant="h6"
-                    fontWeight="600"
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 1.5,
-                        color: theme.palette.text.primary
-                    }}
-                >
+                <Stack direction="row" alignItems="center" spacing={1}>
                     <InfoIcon sx={{ color: theme.palette.custom.highlight }} />
-                    Product Details
-                </Typography>
-                <IconButton
-                    onClick={onClose}
-                    size="small"
-                    sx={{
-                        color: theme.palette.text.secondary,
-                        '&:hover': {
-                            backgroundColor: theme.palette.action.hover
-                        }
-                    }}
-                >
+                    <Typography variant="h6" fontWeight={600}>
+                        Product Details
+                    </Typography>
+                </Stack>
+                <IconButton onClick={onClose} size="small">
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
@@ -213,26 +197,26 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
                         <Box
                             sx={{
                                 position: 'relative',
-                                height: { xs: '300px', md: '100%' },
+                                height: "80vh",
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
                                 p: 2
                             }}
                         >
-                            {product.images && product.images.length > 0 && (
+                            {images.length > 0 && (
                                 <img
-                                    src={product.images[currentImageIndex]}
+                                    src={images[currentImageIndex]}
                                     alt={product.name}
                                     style={{
-                                        maxHeight: '90%',
+                                        maxHeight: '100%',
                                         maxWidth: '90%',
-                                        objectFit: 'contain',
+                                        objectFit: 'cover',
                                     }}
                                 />
                             )}
 
-                            {product.discount && (
+                            {discountValid && (
                                 <Badge
                                     sx={{
                                         position: 'absolute',
@@ -247,13 +231,14 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
                                         boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                                     }}
                                 >
-                                    {product.percentage_Discount}% OFF
+                                    {discountPct}% OFF
                                 </Badge>
                             )}
 
-                            {product.images && product.images.length > 1 && (
+                            {images.length > 1 && (
                                 <>
                                     <IconButton
+                                        onClick={handlePrevImage}
                                         sx={{
                                             position: 'absolute',
                                             left: 8,
@@ -264,11 +249,11 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
                                                 backgroundColor: 'rgba(255,255,255,0.9)',
                                             }
                                         }}
-                                        onClick={handlePrevImage}
                                     >
                                         <ArrowBackIcon />
                                     </IconButton>
                                     <IconButton
+                                        onClick={handleNextImage}
                                         sx={{
                                             position: 'absolute',
                                             right: 8,
@@ -279,7 +264,6 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
                                                 backgroundColor: 'rgba(255,255,255,0.9)',
                                             }
                                         }}
-                                        onClick={handleNextImage}
                                     >
                                         <ArrowForwardIcon />
                                     </IconButton>
@@ -288,7 +272,7 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
                         </Box>
 
                         {/* Thumbnail images */}
-                        {product.images && product.images.length > 1 && (
+                        {images.length > 1 && (
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -298,7 +282,7 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
                                     bgcolor: theme.palette.grey[100]
                                 }}
                             >
-                                {product.images.map((img, index) => (
+                                {images.map((src, index) => (
                                     <Box
                                         key={index}
                                         onClick={() => setCurrentImageIndex(index)}
@@ -319,7 +303,7 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
                                         }}
                                     >
                                         <img
-                                            src={img}
+                                            src={src}
                                             alt={`${product.name} - ${index + 1}`}
                                             style={{
                                                 width: '100%',
@@ -338,14 +322,9 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
                         <Box sx={{ p: 3, height: '100%', overflowY: 'auto' }}>
                             {/* Product name and category */}
                             <Box sx={{ mb: 2 }}>
-                                <Typography
-                                    variant="h5"
-                                    fontWeight="600"
-                                    sx={{ mb: 1 }}
-                                >
+                                <Typography variant="h5" fontWeight="600" sx={{ mb: 1 }}>
                                     {product.name}
                                 </Typography>
-
                                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 1, flexWrap: 'wrap', gap: 1 }}>
                                     <Chip
                                         icon={<CategoryIcon sx={{ fontSize: '1rem' }} />}
@@ -359,7 +338,6 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
                                         }}
                                         variant="outlined"
                                     />
-
                                     <Chip
                                         icon={<InventoryIcon sx={{ fontSize: '1rem' }} />}
                                         label={product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
@@ -386,10 +364,9 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
                                             fontWeight="bold"
                                             color={theme.palette.custom.highlight}
                                         >
-                                            {formatCurrency(product.price, product.currency)}
+                                            {formatCurrency(discountedPrice, product.currency)}
                                         </Typography>
-
-                                        {product.discount && (
+                                        {discountValid && (
                                             <Typography
                                                 variant="body1"
                                                 color="text.secondary"
@@ -399,39 +376,26 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
                                             </Typography>
                                         )}
                                     </Box>
-
-                                    {product.discount && (
-                                        <Box
-                                            sx={{
-                                                mt: 1.5,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: 1.5,
-                                                flexWrap: 'wrap'
-                                            }}
-                                        >
-                                            <Chip
-                                                size="small"
-                                                icon={<OfferIcon sx={{ fontSize: '1rem' }} />}
-                                                label={`Save ${formatCurrency(savings, product.currency)}`}
-                                                sx={{
-                                                    bgcolor: theme.palette.error.main + '15',
-                                                    color: theme.palette.error.main,
-                                                    fontWeight: 'bold',
-                                                    borderColor: theme.palette.error.main + '30'
-                                                }}
-                                                variant="outlined"
-                                            />
-                                            <Typography variant="body2" color="text.secondary">
-                                                <Tooltip title={formatDate(product.valid_Until_Discount)}>
-                                                    <span>
-                                                        Offer ends in {daysUntil(product.valid_Until_Discount)} days
-                                                    </span>
-                                                </Tooltip>
-                                            </Typography>
-                                        </Box>
-                                    )}
                                 </CardContent>
+                                {discountValid && (
+                                    <Box sx={{ px: 2, pb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <Chip
+                                            size="small"
+                                            icon={<OfferIcon sx={{ fontSize: '1rem' }} />}
+                                            label={`You save ${formatCurrency(savings, product.currency)}`}
+                                            sx={{
+                                                bgcolor: theme.palette.error.main + '15',
+                                                color: theme.palette.error.main,
+                                            }}
+                                            variant="outlined"
+                                        />
+                                        <Typography variant="body2" color="text.secondary">
+                                            <Tooltip title={formatDate(product.valid_Until_Discount)}>
+                                                <span>Ends in {daysUntil(product.valid_Until_Discount)} days</span>
+                                            </Tooltip>
+                                        </Typography>
+                                    </Box>
+                                )}
                             </Card>
 
                             {/* Tabs for details */}
@@ -473,124 +437,55 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
 
                             {/* Tab Panels */}
                             <TabPanel value={tabValue} index={0}>
-                                {/* Description */}
                                 <Typography variant="body1" paragraph>
                                     {product.description}
                                 </Typography>
-
-                                {/* Materials */}
                                 <SectionTitle title="Materials" icon={<CategoryIcon />} />
                                 <ChipList items={product.materials_Made || []} icon={<CategoryIcon sx={{ fontSize: '1rem' }} />} />
-
-                                {/* Tags */}
                                 <SectionTitle title="Product Tags" icon={<TagIcon />} />
                                 <ChipList items={product.tags || []} icon={<TagIcon sx={{ fontSize: '1rem' }} />} />
                             </TabPanel>
 
                             <TabPanel value={tabValue} index={1}>
-                                {/* Shipping Details */}
-                                <Box sx={{ mb: 2 }}>
-                                    <Card
-                                        variant="outlined"
-                                        sx={{
-                                            bgcolor: theme.palette.grey[50],
-                                            borderRadius: 2,
-                                            borderColor: theme.palette.grey[200]
-                                        }}
-                                    >
-                                        <CardContent>
-                                            <DetailItem
-                                                icon={<TimeIcon fontSize="small" />}
-                                                label="Processing Time"
-                                                value={product.processing_Time}
-                                            />
-
-                                            <DetailItem
-                                                icon={<ShippingIcon fontSize="small" />}
-                                                label="Shipping Time"
-                                                value={product.shipping_Time}
-                                            />
-
-                                            <DetailItem
-                                                icon={<MoneyIcon fontSize="small" />}
-                                                label="Shipping Cost"
-                                                value={formatCurrency(product.shipping_Cost, product.currency)}
-                                            />
-
-                                            <DetailItem
-                                                icon={<TimeIcon fontSize="small" />}
-                                                label="Estimated Delivery"
-                                                value={formatDate(product.estimated_Delivery)}
-                                            />
-                                        </CardContent>
-                                    </Card>
-                                </Box>
-
-                                {/* Available Countries */}
+                                <Card variant="outlined" sx={{ bgcolor: theme.palette.grey[50], borderRadius: 2, borderColor: theme.palette.grey[200], mb: 2 }}>
+                                    <CardContent>
+                                        <DetailItem icon={<TimeIcon fontSize="small" />} label="Processing Time" value={product.processing_Time} />
+                                        <DetailItem icon={<ShippingIcon fontSize="small" />} label="Shipping Time" value={product.shipping_Time} />
+                                        <DetailItem icon={<MoneyIcon fontSize="small" />} label="Shipping Cost" value={formatCurrency(product.shipping_Cost, product.currency)} />
+                                        <DetailItem icon={<TimeIcon fontSize="small" />} label="Estimated Delivery" value={formatDate(product.estimated_Delivery)} />
+                                    </CardContent>
+                                </Card>
                                 <SectionTitle title="Available For Shipping To" icon={<LanguageIcon />} />
                                 <ChipList items={product.countries_Available || []} icon={<LanguageIcon sx={{ fontSize: '1rem' }} />} />
                             </TabPanel>
 
                             <TabPanel value={tabValue} index={2}>
-                                {/* Seller Details */}
-                                <Box sx={{ mb: 2 }}>
-                                    <Card
-                                        variant="outlined"
-                                        sx={{
-                                            bgcolor: theme.palette.grey[50],
-                                            borderRadius: 2,
-                                            borderColor: theme.palette.grey[200]
-                                        }}
-                                    >
-                                        <CardContent>
-                                            <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
-                                                <Avatar
-                                                    sx={{
-                                                        bgcolor: theme.palette.custom.highlight + '20',
-                                                        color: theme.palette.custom.highlight,
-                                                        width: 56,
-                                                        height: 56
-                                                    }}
-                                                >
-                                                    {product.seller?.sellerProfile?.name?.charAt(0) || 'S'}
-                                                </Avatar>
-                                                <Box>
-                                                    <Typography variant="h6" fontWeight="bold">
-                                                        {product.seller?.sellerProfile?.storeName || "Store"}
-                                                    </Typography>
-                                                    <Typography variant="body2" color="text.secondary">
-                                                        {product.seller?.sellerProfile?.name || "Seller"}
-                                                    </Typography>
-                                                </Box>
-                                                <Chip
-                                                    size="small"
-                                                    icon={<VerifiedIcon sx={{ fontSize: '1rem' }} />}
-                                                    label="Verified Seller"
-                                                    sx={{
-                                                        bgcolor: 'success.main' + '15',
-                                                        color: 'success.main',
-                                                        fontWeight: 'medium',
-                                                        ml: 'auto'
-                                                    }}
-                                                />
-                                            </Stack>
-
-                                            <Divider sx={{ my: 2 }} />
-
-                                            <DetailItem
-                                                icon={<EmailIcon fontSize="small" />}
-                                                label="Email"
-                                                value={product.seller?.sellerProfile?.email || "N/A"}
+                                <Card variant="outlined" sx={{ bgcolor: theme.palette.grey[50], borderRadius: 2, borderColor: theme.palette.grey[200] }}>
+                                    <CardContent>
+                                        <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                                            <Avatar sx={{ bgcolor: theme.palette.custom.highlight + '20', color: theme.palette.custom.highlight, width: 56, height: 56 }}>
+                                                {product.seller?.sellerProfile?.name?.charAt(0) || 'S'}
+                                            </Avatar>
+                                            <Box>
+                                                <Typography variant="h6" fontWeight="bold">
+                                                    {product.seller?.sellerProfile?.storeName || "Store"}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    {product.seller?.sellerProfile?.name || "Seller"}
+                                                </Typography>
+                                            </Box>
+                                            <Chip
+                                                size="small"
+                                                icon={<VerifiedIcon sx={{ fontSize: '1rem' }} />}
+                                                label="Verified Seller"
+                                                sx={{ bgcolor: 'success.main' + '15', color: 'success.main', fontWeight: 'medium', ml: 'auto' }}
                                             />
-
-                                            <DetailItem
-                                                icon={<PhoneIcon fontSize="small" />}
-                                                label="Contact"
-                                                value={product.seller?.sellerProfile?.contactNumber || "N/A"}
-                                            />
-                                        </CardContent>
-                                    </Card>
-                                </Box>
+                                        </Stack>
+                                        <Divider sx={{ my: 2 }} />
+                                        <DetailItem icon={<EmailIcon fontSize="small" />} label="Email" value={product.seller?.sellerProfile?.email || "N/A"} />
+                                        <DetailItem icon={<PhoneIcon fontSize="small" />} label="Contact" value={product.seller?.sellerProfile?.contactNumber || "N/A"} />
+                                    </CardContent>
+                                </Card>
                             </TabPanel>
                         </Box>
                     </Grid>
@@ -601,25 +496,17 @@ const ProductDetailPanel = ({ product, onClose, open }) => {
 };
 
 // TabPanel component for the tabs
-const TabPanel = (props) => {
-    const { children, value, index, ...other } = props;
-
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`product-tabpanel-${index}`}
-            aria-labelledby={`product-tab-${index}`}
-            {...other}
-            style={{ paddingBottom: '16px' }}
-        >
-            {value === index && (
-                <Box>
-                    {children}
-                </Box>
-            )}
-        </div>
-    );
-};
+const TabPanel = ({ children, value, index, ...other }) => (
+    <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`product-tabpanel-${index}`}
+        aria-labelledby={`product-tab-${index}`}
+        {...other}
+        style={{ paddingBottom: 16 }}
+    >
+        {value === index && <Box>{children}</Box>}
+    </div>
+);
 
 export default ProductDetailPanel;

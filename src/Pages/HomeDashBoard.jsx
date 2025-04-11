@@ -157,7 +157,7 @@ const HomeDashBoard = () => {
         </Grid>
       </Box>
 
-      <Fab
+      {/* <Fab
         color="primary"
         aria-label="notifications"
         sx={{ position: "fixed", bottom: 16, right: 16, display: { xs: "flex", md: "flex" } }}
@@ -192,7 +192,7 @@ const HomeDashBoard = () => {
             </Paper>
           </Grow>
         </ClickAwayListener>
-      </Popover>
+      </Popover> */}
     </Box>
   );
 };

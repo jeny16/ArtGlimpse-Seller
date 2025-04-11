@@ -13,6 +13,7 @@ export const fetchInventory = createAsyncThunk(
     "inventory/fetchAll",
     async (sellerId, thunkAPI) => {
         try {
+            console.log("inventoryService.getInventory(sellerId)", await inventoryService.getInventory(sellerId))
             return await inventoryService.getInventory(sellerId);
         } catch (error) {
             return thunkAPI.rejectWithValue(error);

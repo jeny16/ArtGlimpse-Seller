@@ -32,6 +32,7 @@ import {
     NAME_MAX_LENGTH,
     formatCurrency
 } from '../index';
+import { getImageUrl } from '../../appwrite/uploadimage';
 
 const getStatusIcon = (status) => {
     switch (status) {
@@ -59,20 +60,26 @@ const ProductTableRow = ({
     handleFieldChange,
     handleSaveChanges,
     rowHeight,
-    // Add the new prop
     onRowClick
 }) => {
     const theme = useTheme();
     const productStatus = getProductStatus(product.stock);
 
+    // Truncate long names
     const truncatedName = product.name.length > NAME_MAX_LENGTH
         ? `${product.name.substring(0, NAME_MAX_LENGTH)}...`
         : product.name;
 
-    // Handle row click with dual functionality
+    // Correct price calculation: treat product.price as original,
+    // compute discounted price = original * (1 - pct/100)
+    const discountPct = product.percentage_Discount || 0;
+    const discountedPrice = product.discount
+        ? Math.round(product.price * (1 - discountPct / 100))
+        : product.price;
+
+    // Handle row click (expand + detail panel)
     const handleRowClick = (e) => {
         if (!isEditing) {
-            // Both expand the row and open the detail panel
             toggleRowExpansion(product.id);
             onRowClick(product.id);
         }
@@ -84,19 +91,21 @@ const ProductTableRow = ({
             sx={{
                 cursor: 'pointer',
                 backgroundColor: isExpanded ? theme.palette.action.hover : 'inherit',
-                '&:hover': {
-                    backgroundColor: theme.palette.action.hover,
-                },
+                '&:hover': { backgroundColor: theme.palette.action.hover },
                 height: rowHeight
             }}
             onClick={handleRowClick}
         >
-            {/* Product Name/Image Column */}
+            {/* Product Name & Image */}
             <TableCell>
                 <Stack direction="row" spacing={2} alignItems="center">
                     <Avatar
                         variant="rounded"
-                        src={product.images && product.images.length > 0 ? product.images[0] : ''}
+                        src={
+                            product.images && product.images.length > 0
+                                ? getImageUrl(product.images[0])
+                                : undefined
+                        }
                         sx={{ width: 50, height: 50 }}
                     >
                         <ImageIcon />
@@ -113,7 +122,7 @@ const ProductTableRow = ({
                         {product.discount && (
                             <Chip
                                 size="small"
-                                label={`${product.percentage_Discount}% OFF`}
+                                label={`${discountPct}% OFF`}
                                 color="error"
                                 sx={{ ml: 1, height: 20 }}
                             />
@@ -133,8 +142,7 @@ const ProductTableRow = ({
                 </Stack>
             </TableCell>
 
-            {/* Rest of the code remains the same */}
-            {/* Category Column */}
+            {/* Category */}
             <TableCell>
                 {isEditing ? (
                     <TextField
@@ -158,7 +166,7 @@ const ProductTableRow = ({
                 )}
             </TableCell>
 
-            {/* Stock Column */}
+            {/* Stock */}
             <TableCell align="center">
                 {isEditing ? (
                     <NumberInput
@@ -166,19 +174,18 @@ const ProductTableRow = ({
                         value={editedValues?.stock}
                         onChange={(e) => handleFieldChange("stock", e.target.value)}
                         sx={{ width: '80px' }}
-                        inputProps={{
-                            min: 0,
-                            step: 1
-                        }}
+                        inputProps={{ min: 0, step: 1 }}
                     />
                 ) : (
                     <Typography
                         variant="body1"
                         fontWeight={product.stock < 10 ? "bold" : "normal"}
                         color={
-                            product.stock === 0 ? "error.main" :
-                                product.stock < 10 ? "warning.main" :
-                                    "text.primary"
+                            product.stock === 0
+                                ? "error.main"
+                                : product.stock < 10
+                                    ? "warning.main"
+                                    : "text.primary"
                         }
                     >
                         {product.stock}
@@ -186,7 +193,7 @@ const ProductTableRow = ({
                 )}
             </TableCell>
 
-            {/* Price Column */}
+            {/* Price */}
             <TableCell align="center">
                 {isEditing ? (
                     <NumberInput
@@ -194,29 +201,27 @@ const ProductTableRow = ({
                         value={editedValues?.price}
                         onChange={(e) => handleFieldChange("price", e.target.value)}
                         sx={{ width: '100px' }}
-                        inputProps={{
-                            min: 0,
-                            step: 100
-                        }}
+                        inputProps={{ min: 0, step: 100 }}
                     />
                 ) : (
                     <Stack direction="column" alignItems="center">
                         <Typography variant="body1" fontWeight="medium">
-                            {formatCurrency(product.price, product.currency || 'INR')}
+                            {formatCurrency(discountedPrice, product.currency || 'INR')}
                         </Typography>
                         {product.discount && (
-                            <Typography variant="caption" color="text.secondary" sx={{ textDecoration: 'line-through' }}>
-                                {formatCurrency(
-                                    Math.round(product.price / (1 - product.percentage_Discount / 100)),
-                                    product.currency || 'INR'
-                                )}
+                            <Typography
+                                variant="caption"
+                                color="text.secondary"
+                                sx={{ textDecoration: 'line-through' }}
+                            >
+                                {formatCurrency(product.price, product.currency || 'INR')}
                             </Typography>
                         )}
                     </Stack>
                 )}
             </TableCell>
 
-            {/* Status Column */}
+            {/* Status */}
             <TableCell align="center">
                 <Chip
                     icon={getStatusIcon(productStatus)}
@@ -227,7 +232,7 @@ const ProductTableRow = ({
                 />
             </TableCell>
 
-            {/* Actions Column */}
+            {/* Actions */}
             <TableCell align="center" onClick={(e) => e.stopPropagation()}>
                 {isEditing ? (
                     <>
@@ -254,14 +259,11 @@ const ProductTableRow = ({
                     <>
                         <Tooltip title="Edit">
                             <IconButton
-                                color="primary"
                                 size="small"
-                                sx={{
-                                    color: theme.palette.custom.highlight,
-                                }}
+                                sx={{ color: theme.palette.custom.highlight }}
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    handleEditClick(product.id);
+                                    handleEditClick(product);
                                 }}
                             >
                                 <EditIcon />

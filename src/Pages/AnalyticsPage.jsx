@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Grid, 
-  Card, 
-  CardContent, 
-  FormControl, 
-  InputLabel, 
-  Select, 
+import {
+  Box,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  FormControl,
+  InputLabel,
+  Select,
   MenuItem,
   Stack
 } from '@mui/material';
-import { 
+import {
   Timeline,
   TimelineItem,
   TimelineSeparator,
@@ -20,17 +20,17 @@ import {
   TimelineDot,
   TimelineOppositeContent
 } from '@mui/lab';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
 } from 'recharts';
-import { 
+import {
   TrendingUp as TrendingUpIcon,
   AttachMoney as AttachMoneyIcon,
   Store as StoreIcon
@@ -78,7 +78,7 @@ const SellerAnalytics = () => {
           productsSold: data.productsSold || 0,
           conversionRate: data.conversionRate,
           visitors: data.visitors || 0,
-          revenueData: data.revenueData || [ 
+          revenueData: data.revenueData || [
             { name: "Jan", Revenue: 4000, Orders: 2400 },
             { name: "Feb", Revenue: 3000, Orders: 1398 }
           ],
@@ -91,7 +91,7 @@ const SellerAnalytics = () => {
             { date: "June 10", event: "New Product Launch", amount: "26 Units Sold" }
           ]
         });
-        
+
       } catch (err) {
         setError(err.message);
       } finally {
@@ -121,7 +121,7 @@ const SellerAnalytics = () => {
   }
 
   return (
-    <Box sx={{ flexGrow: 1, p: 3, backgroundColor: 'background.default', mt: 16 }}>
+    <Box sx={{ flexGrow: 1, p: 3, backgroundColor: 'background.default', my: 20, maxWidth: "lg",mx:"auto" }}>
       <Grid container spacing={3}>
         {/* Header and Time Period Selector */}
         <Grid item xs={12}>
@@ -212,7 +212,7 @@ const SellerAnalytics = () => {
                   No revenue data available.
                 </Typography>
               )}
-              {console.log("jeihu",stats.revenueData.length)}
+              {console.log("jeihu", stats.revenueData.length)}
             </CardContent>
           </Card>
         </Grid>
