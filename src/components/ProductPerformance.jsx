@@ -23,61 +23,63 @@ const ProductPerformance = () => {
   const navigate = useNavigate();
   // Sample data - in a real application this would come from props or an API
   const products = [
-    {
-      id: 1,
-      name: 'Organic Cotton T-Shirt',
-      sales: 42,
-      revenue: 2100,
-      trend: 'up',
-      performance: 80,
-      image: '/api/placeholder/40/40'
-    },
-    {
-      id: 2,
-      name: 'Handcrafted Wooden Bowl',
-      sales: 35,
-      revenue: 1750,
-      trend: 'up',
-      performance: 75,
-      image: '/api/placeholder/40/40'
-    },
-    {
-      id: 3,
-      name: 'Natural Soap Bar',
-      sales: 28,
-      revenue: 840,
-      trend: 'down',
-      performance: 62,
-      image: '/api/placeholder/40/40'
-    },
-    {
-      id: 4,
-      name: 'Eco-Friendly Water Bottle',
-      sales: 21,
-      revenue: 630,
-      trend: 'up',
-      performance: 55,
-      image: '/api/placeholder/40/40'
-    },
-    {
-      id: 5,
-      name: 'Bamboo Toothbrush Set',
-      sales: 18,
-      revenue: 540,
-      trend: 'down',
-      performance: 48,
-      image: '/api/placeholder/40/40'
-    },
-    {
-      id: 6,
-      name: 'Reusable Produce Bags',
-      sales: 15,
-      revenue: 375,
-      trend: 'up',
-      performance: 42,
-      image: '/api/placeholder/40/40'
-    },
-  ];
+  {
+    id: 1,
+    name: "Poornima Handmade Necklace with Earring and Mangtika",
+    sales: 20,
+    revenue: 6656,
+    trend: 'up',
+    performance: 85,
+    image: "https://phuljhadi.com/cdn/shop/files/Phuljhadi0198-copy_800x.jpg?v=1734599555"
+  },
+  {
+    id: 2,
+    name: "Handcrafted Wooden",
+    sales: 18,
+    revenue: 2499,
+    trend: 'down',
+    performance: 70,
+    image: "https://pineconeindia.in/cdn/shop/products/IMG_1312_1296x.jpg?v=1640097344"
+  },
+  {
+    id: 3,
+    name: "Juniper pastel choker",
+    sales: 22,
+    revenue: 2322,
+    trend: 'up',
+    performance: 78,
+    image: "https://phuljhadi.com/cdn/shop/files/Phuljhadi0184-copy_800x.jpg?v=1734599861"
+  },
+  {
+    id: 4,
+    name: "Handcrafted Laundry baskets/ Multi Utility Baskets with lid and handles",
+    sales: 15,
+    revenue: 6867,
+    trend: 'up',
+    performance: 80,
+    image: "https://pineconeindia.in/cdn/shop/products/Laundrybaskets10_1296x.jpg?v=1648878120"
+  },
+  {
+    id: 5,
+    name: "Noopur necklace set",
+    sales: 19,
+    revenue: 2399,
+    trend: 'down',
+    performance: 65,
+    image: "https://phuljhadi.com/cdn/shop/files/0J7A6450copy_ea211694-1d30-4a0d-9b36-4cf8ed81e004_1000x.jpg?v=1737916527"
+  },
+  {
+    id: 6,
+    name: "Handcrafted Kauna grass Planters in diagonal weave",
+    sales: 10,
+    revenue: 1199,
+    trend: 'up',
+    performance: 50,
+    image: "https://pineconeindia.in/cdn/shop/products/Planter12_1_1296x.jpg?v=1646792626"
+  }
+  // Add more products here as needed using the same format
+];
+
 
   return (
     <Card sx={{ height: '100%', boxShadow: 2, display: 'flex', flexDirection: 'column' }}>

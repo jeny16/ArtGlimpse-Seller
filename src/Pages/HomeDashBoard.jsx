@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 // Changed: Import fetchOrders and selectOrders from your order slice instead of fetchStats
 import { fetchOrders, selectOrders } from '../store/orderSlice';
+// Changed: Import fetchOrders and selectOrders from your order slice instead of fetchStats
+import { fetchOrders, selectOrders } from '../store/orderSlice';
 import {
   Typography,
   Grid,
@@ -91,8 +93,32 @@ const HomeDashBoard = () => {
           setError(err);
           setLoading(false);
         });
+      dispatch(fetchOrders())
+        .unwrap()
+        .catch((err) => {
+          setError(err);
+          setLoading(false);
+        });
     }
   }, [dispatch, token]);
+
+  // Whenever the orders are updated, calculate the metrics.
+  useEffect(() => {
+    if (orders && orders.length > 0) {
+      const stats = calculateMetrics(orders);
+      setComputedStats(stats);
+    } else {
+      // If there are no orders, reset metrics to 0
+      setComputedStats({
+        totalRevenue: 0,
+        totalOrders: 0,
+        totalProductsSold: 0,
+        conversionRate: 0
+      });
+    }
+    setLoading(false);
+  }, [orders]);
+
 
   // Whenever the orders are updated, calculate the metrics.
   useEffect(() => {
