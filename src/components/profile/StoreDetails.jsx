@@ -25,7 +25,7 @@ import { fetchStoreDetails, updateStoreDetails } from '../../store/StoreDetailsS
 // Helper function to extract userId from localStorage
 const getUserId = () => {
   try {
-    const userString = localStorage.getItem('user');
+    const userString = localStorage.getItem('seller');
     if (userString) {
       const userObj = JSON.parse(userString);
       return userObj?.userId;

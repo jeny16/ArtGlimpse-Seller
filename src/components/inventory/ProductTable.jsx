@@ -11,9 +11,7 @@ import {
     Box,
     useTheme
 } from '@mui/material';
-import {
-    InboxOutlined as EmptyIcon
-} from '@mui/icons-material';
+import { InboxOutlined as EmptyIcon } from '@mui/icons-material';
 
 import {
     StyledTableHead,
@@ -41,25 +39,27 @@ const ProductTable = ({
     rowHeight
 }) => {
     const theme = useTheme();
-    // Add state for the selected product and detail panel visibility
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [detailPanelOpen, setDetailPanelOpen] = useState(false);
 
-    // Function to handle row click and open detail panel
+    // Normalize products: always ensure each product has an `id`
+    const normalizedProducts = products.map(p => ({
+        id: p.id || p._id,
+        ...p
+    }));
+
     const handleRowClick = (productId) => {
-        if (!editingProduct) {  // Don't open panel when in edit mode
-            const product = products.find(p => p.id === productId);
+        if (!editingProduct) {
+            const product = normalizedProducts.find(p => p.id === productId);
             setSelectedProduct(product);
             setDetailPanelOpen(true);
         }
     };
 
-    // Function to close the detail panel
     const handleCloseDetailPanel = () => {
         setDetailPanelOpen(false);
     };
 
-    // Empty state component
     const EmptyState = () => (
         <TableRow>
             <TableCell colSpan={6} align="center" sx={{ py: 8 }}>
@@ -92,10 +92,10 @@ const ProductTable = ({
                             </TableRow>
                         </StyledTableHead>
                         <TableBody>
-                            {products.length === 0 ? (
+                            {normalizedProducts.length === 0 ? (
                                 <EmptyState />
                             ) : (
-                                products
+                                normalizedProducts
                                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                     .map((product) => (
                                         <ProductTableRow
@@ -112,7 +112,6 @@ const ProductTable = ({
                                             handleFieldChange={handleFieldChange}
                                             handleSaveChanges={handleSaveChanges}
                                             rowHeight={rowHeight}
-                                            // Add the new onClick handler to open detail panel
                                             onRowClick={handleRowClick}
                                         />
                                     ))
@@ -122,7 +121,7 @@ const ProductTable = ({
                 </TableContainer>
                 <TablePagination
                     component="div"
-                    count={products.length}
+                    count={normalizedProducts.length}
                     page={page}
                     onPageChange={handleChangePage}
                     rowsPerPage={rowsPerPage}
@@ -132,7 +131,6 @@ const ProductTable = ({
                 />
             </Paper>
 
-            {/* Add the ProductDetailPanel component */}
             <ProductDetailPanel
                 product={selectedProduct}
                 open={detailPanelOpen}

@@ -99,7 +99,7 @@ const OrderTable = ({ orders, page, rowsPerPage, onRowClick, onStatusChange }) =
                     {orders
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((order) => {
-                            const orderId = order.id || "N/A";
+                            const orderId = order._id || "N/A";
                             const orderTitle =
                                 order.title ||
                                 (order.shippingAddress?.name

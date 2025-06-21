@@ -1,8 +1,8 @@
+// src/slices/orderSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { format } from "date-fns";
 import orderService from "../action/orderService";
 
-// Helper function to safely extract string IDs
 const extractId = (idField) => {
   if (typeof idField === "object" && idField !== null) {
     if (idField.$oid) return idField.$oid;
@@ -15,9 +15,9 @@ const extractId = (idField) => {
 // Thunk to fetch orders
 export const fetchOrders = createAsyncThunk("orders/fetch", async (_, thunkAPI) => {
   try {
-    const data = await orderService.fetchOrders();
-    console.log("response inside fetchOrders:", data);
-    return data;
+    const orders = await orderService.fetchOrders();
+    console.log("response inside fetchOrders:", orders);
+    return orders; // ✅ only array of orders
   } catch (error) {
     return thunkAPI.rejectWithValue(
       error?.response?.data?.message || error?.message || "Failed to fetch orders"
@@ -56,13 +56,21 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrders.fulfilled, (state, action) => {
         state.loading = false;
-        state.orders = action.payload.map((order) => ({
+        const orders = Array.isArray(action.payload) ? action.payload : [];
+
+        state.orders = orders.map((order) => ({
           ...order,
           id: extractId(order.id),
           sellerId: order.sellerId ? extractId(order.sellerId) : null,
           userId: extractId(order.userId),
-          status: order.orderStatus ? order.orderStatus : (order.paymentStatus === "PAID" ? "New" : "Processing"),
-          createdAt: order.createdAt ? format(new Date(order.createdAt), "yyyy-MM-dd HH:mm:ss") : null,
+          status: order.orderStatus
+            ? order.orderStatus
+            : order.paymentStatus === "PAID"
+            ? "New"
+            : "Processing",
+          createdAt: order.createdAt
+            ? format(new Date(order.createdAt), "yyyy-MM-dd HH:mm:ss")
+            : null,
           items: order.items.map((item) => ({
             ...item,
             productId: extractId(item.productId),
@@ -72,15 +80,18 @@ const orderSlice = createSlice({
       })
       .addCase(fetchOrders.rejected, (state, action) => {
         state.loading = false;
-        state.error = typeof action.payload === "string"
-          ? action.payload
-          : action.payload?.message || "Failed to fetch orders";
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : action.payload?.message || "Failed to fetch orders";
       })
 
       // Update order status
       .addCase(updateOrderStatus.fulfilled, (state, action) => {
         const updatedOrder = action.payload;
-        const index = state.orders.findIndex((order) => order.id === extractId(updatedOrder.id));
+        const index = state.orders.findIndex(
+          (order) => order.id === extractId(updatedOrder.id)
+        );
         if (index !== -1) {
           state.orders[index] = {
             ...state.orders[index],
@@ -90,9 +101,10 @@ const orderSlice = createSlice({
         }
       })
       .addCase(updateOrderStatus.rejected, (state, action) => {
-        state.error = typeof action.payload === "string"
-          ? action.payload
-          : action.payload?.message || "Failed to update order status";
+        state.error =
+          typeof action.payload === "string"
+            ? action.payload
+            : action.payload?.message || "Failed to update order status";
       });
   },
 });

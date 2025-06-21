@@ -24,12 +24,12 @@ export async function createProductAPI(formData) {
   }
 
   imageIds.forEach(id => formData.append('images', id));
-  const stored = JSON.parse(localStorage.getItem('user') || '{}');
+  const stored = JSON.parse(localStorage.getItem('seller') || '{}');
   const token = stored.token || '';
   const sellerId = stored.userId || '';
 
   const resp = await axios.post(
-    `http://localhost:8081/products?sellerId=${sellerId}`,
+    `http://localhost:3000/products?sellerId=${sellerId}`,
     formData,
     {
       headers: { Authorization: `Bearer ${token}` },
@@ -40,9 +40,9 @@ export async function createProductAPI(formData) {
 }
 
 export async function updateProductAPI(id, updateObj) {
-  const token = JSON.parse(localStorage.getItem('user') || '{}').token || '';
+  const token = JSON.parse(localStorage.getItem('seller') || '{}').token || '';
   const resp = await axios.patch(
-    `http://localhost:8081/products/${id}`,
+    `http://localhost:3000/products/${id}`,
     updateObj,
     {
       headers: { Authorization: `Bearer ${token}` },

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8081/api/auth';
+const API_URL = 'http://localhost:3000/api/auth';
 
 const authService = {
     // Seller login (uses dedicated seller endpoint)
@@ -8,10 +8,10 @@ const authService = {
         try {
             const response = await axios.post(`${API_URL}/seller/login`, { 
                 email, 
-                password 
+                password    
             });
             if (response.data.token) {
-                localStorage.setItem('user', JSON.stringify(response.data));
+                localStorage.setItem('seller', JSON.stringify(response.data));
             }
             return response.data;
         } catch (error) {
@@ -39,7 +39,7 @@ const authService = {
     },
 
     logout: () => {
-        localStorage.removeItem('user');
+        localStorage.removeItem('seller');
     }
 };
 

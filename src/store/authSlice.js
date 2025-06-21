@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 // Try to get the user from localStorage (if available)
-const user = JSON.parse(localStorage.getItem('user'));
+const user = JSON.parse(localStorage.getItem('seller'));
 
 const initialState = {
   isLoggedIn: !!user,

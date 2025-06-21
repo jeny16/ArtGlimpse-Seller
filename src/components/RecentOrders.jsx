@@ -23,7 +23,7 @@ const RecentOrders = () => {
   const navigate = useNavigate();
   const { orders, loading, error } = useSelector((state) => state.orders);
   const theme = useTheme();
-  const storedUser = JSON.parse(localStorage.getItem("user"));
+  const storedUser = JSON.parse(localStorage.getItem("seller"));
   const sellerId = storedUser?.userId;
 
   useEffect(() => {

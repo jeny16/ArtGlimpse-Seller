@@ -14,16 +14,16 @@ const Layout = () => {
 
   useEffect(() => {
     const validateToken = async () => {
-      const storedUser = localStorage.getItem("user");
+      const storedUser = localStorage.getItem("seller");
       if (storedUser) {
         const { token } = JSON.parse(storedUser);
         try {
-          await axios.get("http://localhost:8081/api/auth/validate", {
+          await axios.get("http://localhost:3000/api/validate", {
             headers: { Authorization: `Bearer ${token}` },
           });
         } catch (error) {
           dispatch(logout());
-          localStorage.removeItem("user");
+          localStorage.removeItem("seller");
           console.error(
             "Token validation failed, user has been logged out.",
             error

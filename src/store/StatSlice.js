@@ -4,10 +4,10 @@ import axios from 'axios';
 // Thunk to fetch stats with auth token
 export const fetchStats = createAsyncThunk('stats/fetchStats', async (_, { rejectWithValue }) => {
   try {
-    const userdata = JSON.parse(localStorage.getItem('user'));
+    const userdata = JSON.parse(localStorage.getItem('seller'));
     const token = userdata?.token;
 
-    const response = await axios.get('http://localhost:8081/api/stats', {
+    const response = await axios.get('http://localhost:3000/api/stats', {
       headers: {
         Authorization: `Bearer ${token}`,
       },

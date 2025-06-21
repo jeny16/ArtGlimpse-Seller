@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchStats } from '../store/StatSlice';
+// Changed: Import fetchOrders and selectOrders from your order slice instead of fetchStats
+import { fetchOrders, selectOrders } from '../store/orderSlice';
 import {
   Typography,
   Grid,
@@ -38,24 +39,78 @@ import { useNavigate } from 'react-router-dom';
 const HomeDashBoard = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { stats, loading, error } = useSelector((state) => state.stats);
-  const userdata = JSON.parse(localStorage.getItem('user'));
+  // Instead of using stats from a stat slice, we fetch orders and derive our stats
+  const orders = useSelector(selectOrders);
+  const userdata = JSON.parse(localStorage.getItem('seller'));
   const token = userdata?.token;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const notificationAnchorRef = useRef(null);
-  
+
+  // Local state to store computed metrics from orders
+  const [computedStats, setComputedStats] = useState({
+    totalRevenue: 0,
+    totalOrders: 0,
+    totalProductsSold: 0,
+    conversionRate: 0
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Helper function to compute metrics from the orders array.
+  // Only includes orders whose orderStatus is not "Canceled" or "Returned"
+  const calculateMetrics = (ordersArray) => {
+    let totalRevenue = 0;
+    let totalOrders = 0;
+    let totalProductsSold = 0;
+
+    ordersArray.forEach((order) => {
+      if (order.orderStatus !== 'Canceled' && order.orderStatus !== 'Returned') {
+        totalRevenue += order.totalAmount;
+        totalOrders += 1;
+        totalProductsSold += order.items.reduce((sum, item) => sum + item.quantity, 0);
+      }
+    });
+
+    totalRevenue = parseFloat(totalRevenue.toFixed(2));  
+    // Example conversion rate calculation: (products sold per valid order * 100).
+    // Adjust this calculation based on your specific business logic.
+    const conversionRate = totalOrders ? ((totalProductsSold / totalOrders) * 100).toFixed(1) : 0;
+
+    return { totalRevenue, totalOrders, totalProductsSold, conversionRate };
+  };
+
+  // Dispatch fetchOrders on component mount
   useEffect(() => {
     if (token) {
-      dispatch(fetchStats());
+      dispatch(fetchOrders())
+        .unwrap()
+        .catch((err) => {
+          setError(err);
+          setLoading(false);
+        });
     }
   }, [dispatch, token]);
-  
-  console.log("Current stats state:", stats);
-  
-  
+
+  // Whenever the orders are updated, calculate the metrics.
+  useEffect(() => {
+    if (orders && orders.length > 0) {
+      const stats = calculateMetrics(orders);
+      setComputedStats(stats);
+    } else {
+      // If there are no orders, reset metrics to 0
+      setComputedStats({
+        totalRevenue: 0,
+        totalOrders: 0,
+        totalProductsSold: 0,
+        conversionRate: 0
+      });
+    }
+    setLoading(false);
+  }, [orders]);
+
   const toggleNotifications = () => {
     setNotificationsOpen((prevOpen) => !prevOpen);
   };
@@ -67,16 +122,30 @@ const HomeDashBoard = () => {
     setNotificationsOpen(false);
   };
 
+  // For demonstration, using a fixed unread notifications count
   const unreadNotifications = 3;
+
+  if (loading) {
+    return (
+      <Box sx={{ mt: 16, p: 3 }}>
+        <Typography variant="h6">Loading orders...</Typography>
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ mt: 16, p: 3 }}>
+        <Typography variant="h6" color="error">
+          Error: {error?.message}
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ display: "flex", my: 16, minHeight: "100vh", px: 2, py: 4, flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
       <Box component="main" sx={{ flexGrow: 1, width: "100%", maxWidth: "lg" }}>
-        <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" sx={{ fontWeight: 700, color: "text.primary" }}>
-            {/* SELLER-PORTAL */}
-          </Typography>
-        </Box>
 
         {/* Stats Overview */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
@@ -84,7 +153,7 @@ const HomeDashBoard = () => {
             <StatCard
               icon={DollarSign}
               title="Total Revenue"
-              value={`₹${stats.totalRevenue || 0}`}
+              value={`₹${computedStats.totalRevenue || 0}`}
               change={15.5}
               color="primary.highlight"
               subtext="Net Sales"
@@ -94,7 +163,7 @@ const HomeDashBoard = () => {
             <StatCard
               icon={ShoppingBag}
               title="Total Orders"
-              value={stats.totalOrders || 0}
+              value={computedStats.totalOrders || 0}
               change={22.3}
               color="success.main"
               subtext="Completed"
@@ -104,7 +173,7 @@ const HomeDashBoard = () => {
             <StatCard
               icon={Package}
               title="Products Sold"
-              value={stats.productsSold || 0}
+              value={computedStats.totalProductsSold || 0}
               change={10.7}
               color="warning.main"
               subtext="Unique Items"
@@ -114,7 +183,7 @@ const HomeDashBoard = () => {
             <StatCard
               icon={TrendingUp}
               title="Conversion Rate"
-              value={`${stats.conversionRate || 0}%`}
+              value={`${computedStats.conversionRate || 0}%`}
               change={5.2}
               color="secondary.main"
               subtext="Visitor to Order"
@@ -150,21 +219,29 @@ const HomeDashBoard = () => {
 
           <Grid item xs={12} md={8}>
             <Grid container spacing={3}>
-              <Grid item xs={12}><RecentOrders /></Grid>
-              <Grid item xs={12}><ProductPerformance /></Grid>
+              <Grid item xs={12}>
+                <RecentOrders />
+              </Grid>
+              <Grid item xs={12}>
+                <ProductPerformance />
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
       </Box>
 
-      {/* <Fab
+      {/* Notifications section (commented out) */}
+      {/*
+      <Fab
         color="primary"
         aria-label="notifications"
         sx={{ position: "fixed", bottom: 16, right: 16, display: { xs: "flex", md: "flex" } }}
         onClick={toggleNotifications}
         ref={notificationAnchorRef}
       >
-        <Badge badgeContent={unreadNotifications} color="error"><Bell /></Badge>
+        <Badge badgeContent={unreadNotifications} color="error">
+          <Bell />
+        </Badge>
       </Fab>
 
       <Popover
@@ -192,7 +269,8 @@ const HomeDashBoard = () => {
             </Paper>
           </Grow>
         </ClickAwayListener>
-      </Popover> */}
+      </Popover>
+      */}
     </Box>
   );
 };

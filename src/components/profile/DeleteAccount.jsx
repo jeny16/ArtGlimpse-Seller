@@ -27,7 +27,7 @@ const DeleteAccount = () => {
         }
         try {
             await dispatch(deleteSellerAccount({ sellerId })).unwrap();
-            localStorage.removeItem('user');
+            localStorage.removeItem('seller');
             window.location.href = '/';
         } catch (error) {
             console.error('Delete error:', error);

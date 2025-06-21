@@ -49,10 +49,11 @@ const Inventory = () => {
 
   // Fetch inventory on component mount
   useEffect(() => {
-    const userData = localStorage.getItem("user");
+    const userData = localStorage.getItem("seller");
+    console.log("seller data :::", userData);
     if (userData) {
       const user = JSON.parse(userData);
-      const sellerId = user.sellerId;
+      const sellerId = user.userId;
       if (sellerId) {
         dispatch(fetchInventory(sellerId));
       } else {
@@ -64,7 +65,7 @@ const Inventory = () => {
   // Re-fetch inventory when a product is successfully added or updated
   useEffect(() => {
     if (addProductSuccess) {
-      const userData = localStorage.getItem("user");
+      const userData = localStorage.getItem("seller");
       if (userData) {
         const sellerId = JSON.parse(userData).sellerId;
         if (sellerId) {
