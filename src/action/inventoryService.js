@@ -1,6 +1,7 @@
 import axios from "axios";
+import conf from "../conf/conf";
 
-const API_URL = "http://localhost:8081/products";
+const API_URL = `${conf.apiBaseUrl}/products`;
 
 const inventoryService = {
     // Fetch inventory for the logged-in seller by passing sellerId

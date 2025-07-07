@@ -35,6 +35,7 @@ import {
   AttachMoney as AttachMoneyIcon,
   Store as StoreIcon
 } from '@mui/icons-material';
+import conf from '../conf/conf';
 
 const SellerAnalytics = () => {
   const [timePeriod, setTimePeriod] = useState('monthly');
@@ -56,7 +57,7 @@ const SellerAnalytics = () => {
     const fetchStats = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:8081/api/stats?timePeriod=${timePeriod}`);
+        const response = await fetch(`${conf.apiBaseUrl}/api/stats?timePeriod=${timePeriod}`);
         if (!response.ok) {
           throw new Error('Failed to fetch stats');
         }

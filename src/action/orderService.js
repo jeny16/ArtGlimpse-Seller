@@ -1,5 +1,7 @@
 import axios from './api';
-const API_URL = 'http://localhost:8081/orders';
+import conf from '../conf/conf';
+
+const API_URL = `${conf.apiBaseUrl}/orders`;
 
 const orderService = {
 

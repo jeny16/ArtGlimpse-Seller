@@ -29,7 +29,7 @@ export async function createProductAPI(formData) {
   const sellerId = stored.userId || '';
 
   const resp = await axios.post(
-    `http://localhost:8081/products?sellerId=${sellerId}`,
+    `${conf.apiBaseUrl}/products?sellerId=${sellerId}`,
     formData,
     {
       headers: { Authorization: `Bearer ${token}` },
@@ -42,7 +42,7 @@ export async function createProductAPI(formData) {
 export async function updateProductAPI(id, updateObj) {
   const token = JSON.parse(localStorage.getItem('user') || '{}').token || '';
   const resp = await axios.patch(
-    `http://localhost:8081/products/${id}`,
+    `${conf.apiBaseUrl}/products/${id}`,
     updateObj,
     {
       headers: { Authorization: `Bearer ${token}` },

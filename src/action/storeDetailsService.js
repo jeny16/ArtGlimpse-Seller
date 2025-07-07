@@ -1,6 +1,7 @@
 import axios from 'axios';
+import conf from '../conf/conf';
 
-const BASE_URL = 'http://localhost:8081/api/seller/store';
+const BASE_URL = `${conf.apiBaseUrl}/api/seller/store`;
 
 const storeDetailsService = {
     // Fetch store details for a seller using their ID (passed as userId to backend)

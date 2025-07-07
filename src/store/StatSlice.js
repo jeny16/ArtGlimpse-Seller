@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import conf from '../conf/conf';
 
 // Thunk to fetch stats with auth token
 export const fetchStats = createAsyncThunk('stats/fetchStats', async (_, { rejectWithValue }) => {
@@ -7,7 +8,7 @@ export const fetchStats = createAsyncThunk('stats/fetchStats', async (_, { rejec
     const userdata = JSON.parse(localStorage.getItem('user'));
     const token = userdata?.token;
 
-    const response = await axios.get('http://localhost:8081/api/stats', {
+    const response = await axios.get(`${conf.apiBaseUrl}/api/stats`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

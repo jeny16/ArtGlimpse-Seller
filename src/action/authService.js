@@ -1,14 +1,15 @@
 import axios from 'axios';
+import conf from '../conf/conf';
 
-const API_URL = 'http://localhost:8081/api/auth';
+const API_URL = `${conf.apiBaseUrl}/api/auth`;
 
 const authService = {
     // Seller login (uses dedicated seller endpoint)
     sellerLogin: async (email, password) => {
         try {
-            const response = await axios.post(`${API_URL}/seller/login`, { 
-                email, 
-                password 
+            const response = await axios.post(`${API_URL}/seller/login`, {
+                email,
+                password
             });
             if (response.data.token) {
                 localStorage.setItem('user', JSON.stringify(response.data));

@@ -1,5 +1,7 @@
 import axios from './api'; // using the configured axios instance
-const API_URL = 'http://localhost:8081/api/seller';
+import conf from '../conf/conf';
+
+const API_URL = `${conf.apiBaseUrl}/api/seller`;
 
 const sellerService = {
     getProfile: async (sellerId) => {
